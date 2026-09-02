@@ -136,6 +136,16 @@ The specification required at least **4 endpoints**. This implementation integra
 
 1. Web app launches cleanly on `npm run dev` with zero runtime console errors.
 2. Build generates 100% static & server-rendered pages via `npm run build`.
-3. Watchlist items remain saved after browser refreshes or new session tabs.
-4. Search results filter seamlessly across Movie, TV, and People categories.
-5. Movie & TV detail pages render trailer players, cast lists, and metadata without layout breaks.
+3. All 34 Vitest unit tests pass successfully via `npm run test`.
+4. Playwright E2E tests execute and validate user flows via `npm run test:e2e`.
+5. Watchlist items remain saved after browser refreshes or new session tabs.
+6. Search results filter seamlessly across Movie, TV, and People categories.
+
+---
+
+## 7. Related Technical Documents
+
+- [🏛️ System Architecture Blueprint (`docs/ARCHITECTURE.md`)](./ARCHITECTURE.md)
+- [📡 TMDB API Integration Reference (`docs/API_DOCUMENTATION.md`)](./API_DOCUMENTATION.md)
+- [🎨 Elemes Cinema Design System — Midnight Cyan (`docs/DESIGN_SYSTEM.md`)](./DESIGN_SYSTEM.md)
+- [🧪 Feature Validations & Testing Guide (`docs/FEATURE_VALIDATIONS.md`)](./FEATURE_VALIDATIONS.md)

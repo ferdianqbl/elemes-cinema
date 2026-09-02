@@ -6,14 +6,15 @@ A modern, high-performance cinema streaming and media discovery web application 
 
 ## 📚 Project Documentation Hub
 
-Complete technical specifications and validation matrices are available in the [`docs/`](./docs) directory:
+Complete technical specifications, API guides, and validation matrices are available in the [`docs/`](./docs) directory:
 
 | Document | Description | Link |
 |---|---|---|
 | **Product Requirements Document** | Complete feature list, user personas, TMDB endpoints matrix, and non-functional requirements. | [📄 `docs/PRD.md`](./docs/PRD.md) |
 | **System Architecture & Blueprint** | Technical stack breakdown, feature-driven folder structure, data flow, and naming standards. | [🏛️ `docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) |
+| **TMDB API Integration Guide** | Comprehensive documentation for all 12+ integrated endpoints, query parameters, types, and schemas. | [📡 `docs/API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md) |
 | **Elemes Cinema Design System (ECDS)** | Canonical "Midnight Cyan" cinema dark-mode tokens, typography, radii rules, and components. | [🎨 `docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md) |
-| **Feature Validations & Testing Matrix** | Step-by-step test matrix, edge cases, accessibility audit, and submission checklist. | [🧪 `docs/FEATURE_VALIDATIONS.md`](./docs/FEATURE_VALIDATIONS.md) |
+| **Feature Validations & Testing Matrix** | Step-by-step test matrix, automated test execution, accessibility audit, and submission checklist. | [🧪 `docs/FEATURE_VALIDATIONS.md`](./docs/FEATURE_VALIDATIONS.md) |
 
 ---
 
@@ -53,6 +54,8 @@ Complete technical specifications and validation matrices are available in the [
 * **Server State & Caching:** [TanStack React Query v5](https://tanstack.com/query/latest) with a 5-minute stale-time caching strategy and deterministic query key factories.
 * **HTTP Client:** [Axios](https://axios-http.com/) configured with request/response interceptors for TMDB v4 Bearer Tokens and v3 API Key fallbacks.
 * **Client State & Persistence:** [Zustand v5](https://zustand-demo.pmnd.rs/) with `persist` middleware for zero-friction `localStorage` synchronization.
+* **Unit Testing:** [Vitest 3](https://vitest.dev/) + [React Testing Library](https://testing-library.com/) + [jsdom](https://github.com/jsdom/jsdom).
+* **End-to-End Testing:** [Playwright](https://playwright.dev/) across Desktop and Mobile viewports.
 * **Iconography:** [Lucide React](https://lucide.dev/).
 
 ---
@@ -91,6 +94,8 @@ The project integrates **12 TMDB API endpoints**, exceeding the 4-endpoint minim
 ### 5. LocalStorage Watchlist (`/watchlist`)
 - Reactive bookmarking stored in `localStorage` via Zustand with live navbar badge counter and media-type filtering (`All`, `Movies`, `TV`).
 
+👉 Read full API schema in [📡 `docs/API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md).
+
 ---
 
 ## 🎨 Design System: "Midnight Cyan" (ECDS)
@@ -104,7 +109,7 @@ The interface follows the **Elemes Cinema Design System (ECDS)** inspired by the
 * **Strict Radii Hierarchy:** $8\text{px}$ for buttons and media cards, $100\text{px}$ (`rounded-full`) for pill category toggles, $4\text{px}$ for micro tags. Zero mixed arbitrary radii.
 * **Contrast-Driven Elevation:** Zero artificial drop shadows — depth is established strictly through high-contrast surface polarity and hairline borders (`border-white/10`).
 
-👉 Read full design tokens in [📄 `docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md).
+👉 Read full design tokens in [🎨 `docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md).
 
 ---
 
@@ -115,8 +120,15 @@ workspace/
 ├── docs/                                  # Comprehensive Documentation Hub
 │   ├── PRD.md                             # Product Requirements Document
 │   ├── ARCHITECTURE.md                    # System Architecture Blueprint
+│   ├── API_DOCUMENTATION.md               # TMDB API Integration Reference
 │   ├── DESIGN_SYSTEM.md                   # Elemes Cinema Design System Specification
 │   └── FEATURE_VALIDATIONS.md             # Quality Assurance & Test Guide
+├── e2e/                                   # Playwright End-to-End Test Suite
+│   ├── home.spec.ts                       # Home & discovery navigation tests
+│   ├── movies.spec.ts                     # Movies catalog & detail tests
+│   ├── tv.spec.ts                         # TV catalog & seasons guide tests
+│   ├── search.spec.ts                     # Multi-search & ⌘K modal tests
+│   └── watchlist.spec.ts                  # LocalStorage watchlist persistence tests
 ├── public/                                # Static assets & placeholder images
 ├── src/
 │   ├── app/                               # Next.js 16 App Router Route Tree
@@ -159,13 +171,16 @@ workspace/
 │   │
 │   ├── providers/                         # Providers (TanStack Query Client)
 │   ├── store/                             # Global Zustand Stores (Watchlist & UI State)
+│   ├── test/                              # Vitest Test Setup & Global Mocks
 │   └── types/                             # Global TypeScript Contracts & API Responses
 ├── .env.example                           # Environment variables schema
 ├── components.json                        # shadcn/ui configuration
 ├── next.config.ts                         # TMDB Image domain allowlist
 ├── package.json                           # Dependencies & scripts
+├── playwright.config.ts                   # Playwright E2E configuration
 ├── postcss.config.mjs                     # Tailwind PostCSS configuration
-└── tsconfig.json                          # TypeScript configuration with @/* path aliases
+├── tsconfig.json                          # TypeScript configuration with @/* path aliases
+└── vitest.config.ts                       # Vitest configuration with jsdom & react
 ```
 
 ---
@@ -218,8 +233,30 @@ npm run start
 
 For detailed test procedures, responsive audits, accessibility verification, and edge-case testing, refer to [🧪 `docs/FEATURE_VALIDATIONS.md`](./docs/FEATURE_VALIDATIONS.md).
 
+### 1. Unit & Component Integration Tests (Vitest)
 ```bash
-# Production build test with 0 errors
+# Run unit & integration tests (34 tests passing)
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate test coverage report
+npm run test:coverage
+```
+
+### 2. End-to-End Tests (Playwright)
+```bash
+# Run all E2E tests headless
+npm run test:e2e
+
+# Run E2E tests with interactive UI mode
+npm run test:e2e:ui
+```
+
+### 3. Production Build Validation
+```bash
+# Compile optimized production build with Turbopack (0 errors)
 npm run build
 ```
 

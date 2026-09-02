@@ -168,18 +168,68 @@ This document provides a systematic verification matrix for all features request
 
 ---
 
-## 3. Submission Checklist for Elemes
+---
+
+## 3. Automated Testing Suites
+
+### 3.1 Unit & Integration Testing (Vitest + Testing Library)
+Vitest executes unit and component integration tests with jsdom environment:
+
+```bash
+# Run unit & integration tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate code coverage report
+npm run test:coverage
+```
+
+#### Test Suite Breakdown (34 / 34 Tests Passing)
+* `src/lib/__tests__/utils.test.ts` (11 tests) — Formatters for currency, runtime, ratings, and ISO dates.
+* `src/lib/__tests__/tmdb.test.ts` (7 tests) — TMDB image CDN URL builders and YouTube video embeds.
+* `src/store/__tests__/use-watchlist-store.test.ts` (5 tests) — Zustand state mutations and LocalStorage persistence.
+* `src/features/movies/__tests__/movie.service.test.ts` (4 tests) — Movie API service layer.
+* `src/features/tv/__tests__/tv.service.test.ts` (2 tests) — TV show API service layer.
+* `src/features/search/__tests__/search.service.test.ts` (1 test) — Multi-search API service layer.
+* `src/components/ui/__tests__/rating-badge.test.tsx` (4 tests) — RatingBadge rendering and color token variants.
+
+### 3.2 End-to-End Testing (Playwright)
+Playwright executes user journeys across Chromium and Mobile viewports:
+
+```bash
+# Run all E2E tests headless
+npm run test:e2e
+
+# Run E2E tests with interactive UI mode
+npm run test:e2e:ui
+```
+
+#### E2E Test Suites
+* `e2e/home.spec.ts` — Brand header, featured hero banner, discovery shelves, catalog links.
+* `e2e/movies.spec.ts` — Category tab switching, pagination, and movie detail navigation.
+* `e2e/tv.spec.ts` — TV catalog category filters and seasons/episodes breakdown.
+* `e2e/search.spec.ts` — Multi-search results, filter tabs, and quick search modal dialog (`⌘K`).
+* `e2e/watchlist.spec.ts` — Add to watchlist, counter badge updates, viewing and LocalStorage persistence.
+
+---
+
+## 4. Submission Checklist for Elemes
 
 Before sending the assignment to **`alifa@elemes.id`**, confirm the following deliverables:
 
-- [x] **Framework & Stack:** Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + Axios + TanStack Query + Zustand.
-- [x] **TMDB API Requirements:** Exceeded minimum (12 endpoints integrated).
+- [x] **Framework & Stack:** Next.js 16.2.9 (Turbopack) + React 19 + TypeScript + Tailwind CSS v4 + Axios + TanStack Query + Zustand.
+- [x] **TMDB API Requirements:** Exceeded minimum (12+ endpoints integrated).
+- [x] **Automated Testing Suite:** 34 Vitest unit tests + Playwright E2E test suite.
 - [x] **Documentation Included:**
-  - [`README.md`](file:///Users/ferdianqbl/_WORK/Exploration/FS/tech-test/elemes/workspace/README.md) (Installation, setup, environment configuration)
-  - [`docs/PRD.md`](file:///Users/ferdianqbl/_WORK/Exploration/FS/tech-test/elemes/workspace/docs/PRD.md) (Feature specifications)
-  - [`docs/ARCHITECTURE.md`](file:///Users/ferdianqbl/_WORK/Exploration/FS/tech-test/elemes/workspace/docs/ARCHITECTURE.md) (Folder structure, naming standards, data flow)
-  - [`docs/FEATURE_VALIDATIONS.md`](file:///Users/ferdianqbl/_WORK/Exploration/FS/tech-test/elemes/workspace/docs/FEATURE_VALIDATIONS.md) (Testing & verification matrix)
+  - [`README.md`](../README.md) (Installation, setup, documentation hub)
+  - [`docs/PRD.md`](./PRD.md) (Product Requirements & User Personas)
+  - [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md) (System Architecture & Module Breakdown)
+  - [`docs/API_DOCUMENTATION.md`](./API_DOCUMENTATION.md) (12+ TMDB Endpoints Reference)
+  - [`docs/DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) (Elemes Cinema Design System — Midnight Cyan)
+  - [`docs/FEATURE_VALIDATIONS.md`](./FEATURE_VALIDATIONS.md) (Testing & Quality Assurance Guide)
 - [x] **Production Build:** `npm run build` generates 100% static & dynamic routes with **0 errors**.
-- [ ] **GitHub / GitLab Repository:** Push repository to GitHub.
+- [x] **GitHub Repository:** Pushed to [https://github.com/ferdianqbl/elemes-cinema](https://github.com/ferdianqbl/elemes-cinema).
 - [ ] **Live Demo Deployment:** Deploy to Vercel / Netlify and generate public URL.
 - [ ] **Email Submission:** Send email to `alifa@elemes.id` with repository and live demo links.

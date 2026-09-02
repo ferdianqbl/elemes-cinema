@@ -70,8 +70,15 @@ workspace/
 ├── docs/                                  # Project documentation & test matrices
 │   ├── PRD.md                             # Product Requirements Document
 │   ├── ARCHITECTURE.md                    # This architecture document
+│   ├── API_DOCUMENTATION.md               # TMDB API Integration & Endpoints Reference
 │   ├── DESIGN_SYSTEM.md                   # Elemes Cinema Design System (Midnight Cyan)
 │   └── FEATURE_VALIDATIONS.md             # Quality assurance and validation guide
+├── e2e/                                   # Playwright End-to-End Test Suite
+│   ├── home.spec.ts                       # Home & discovery navigation tests
+│   ├── movies.spec.ts                     # Movies catalog & detail tests
+│   ├── tv.spec.ts                         # TV catalog & seasons guide tests
+│   ├── search.spec.ts                     # Multi-search & ⌘K modal tests
+│   └── watchlist.spec.ts                  # LocalStorage watchlist persistence tests
 ├── public/                                # Public static assets & default placeholders
 ├── src/
 │   ├── app/                               # Next.js App Router Route Tree
