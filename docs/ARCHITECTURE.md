@@ -70,6 +70,7 @@ workspace/
 ├── docs/                                  # Project documentation & test matrices
 │   ├── PRD.md                             # Product Requirements Document
 │   ├── ARCHITECTURE.md                    # This architecture document
+│   ├── DESIGN_SYSTEM.md                   # Elemes Cinema Design System (Midnight Cyan)
 │   └── FEATURE_VALIDATIONS.md             # Quality assurance and validation guide
 ├── public/                                # Public static assets & default placeholders
 ├── src/
