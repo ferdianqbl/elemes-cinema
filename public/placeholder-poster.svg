@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750" width="500" height="750">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E121B" />
+      <stop offset="50%" stop-color="#07090E" />
+      <stop offset="100%" stop-color="#020305" />
+    </linearGradient>
+    <radialGradient id="cyanGlow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="cyanBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="500" height="750" fill="url(#bg)" />
+  <rect width="500" height="750" fill="url(#cyanGlow)" />
+  
+  <!-- Outer hairline frame -->
+  <rect x="16" y="16" width="468" height="718" rx="8" fill="none" stroke="url(#cyanBorder)" stroke-width="1.5" />
+
+  <!-- Center Icon Group -->
+  <g transform="translate(250, 340)" text-anchor="middle">
+    <!-- Cinema Clapperboard / Film Reel Icon -->
+    <circle cx="0" cy="-20" r="54" fill="#0E121B" stroke="#00E5FF" stroke-width="2" stroke-opacity="0.5" />
+    
+    <!-- Film Slate -->
+    <path d="M -24 -36 L 24 -36 C 26.2 -36 28 -34.2 28 -32 L 28 -8 C 28 -5.8 26.2 -4 24 -4 L -24 -4 C -26.2 -4 -28 -5.8 -28 -8 L -28 -32 C -28 -34.2 -26.2 -36 -24 -36 Z" fill="#07090E" stroke="#00E5FF" stroke-width="2" />
+    <!-- Clapper stripes -->
+    <path d="M -20 -36 L -12 -24 M -8 -36 L 0 -24 M 4 -36 L 12 -24 M 16 -36 L 24 -24" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" />
+    <!-- Play symbol in bottom section -->
+    <polygon points="-4,-18 8,-12 -4,-6" fill="#00E5FF" />
+
+    <!-- Brand Typography -->
+    <text y="75" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="4">ELEMES CINEMA</text>
+    <text y="100" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" letter-spacing="1.5">POSTER UNAVAILABLE</text>
+    <text y="125" fill="#38BDF8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10" font-weight="600" letter-spacing="2" opacity="0.8">PREMIUM ARCHIVE</text>
+  </g>
+</svg>

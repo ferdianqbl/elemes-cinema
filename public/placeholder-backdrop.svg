@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgBackdrop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E121B" />
+      <stop offset="50%" stop-color="#07090E" />
+      <stop offset="100%" stop-color="#000000" />
+    </linearGradient>
+    <radialGradient id="cyanBackdropGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgBackdrop)" />
+  <rect width="1280" height="720" fill="url(#cyanBackdropGlow)" />
+  
+  <!-- Subtle letterbox borders -->
+  <rect x="24" y="24" width="1232" height="672" rx="8" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1.5" />
+
+  <g transform="translate(640, 340)" text-anchor="middle">
+    <!-- Camera / Projector Icon -->
+    <circle cx="0" cy="-30" r="64" fill="#0E121B" stroke="#00E5FF" stroke-width="2" stroke-opacity="0.6" />
+    <path d="M -30 -42 L 10 -42 C 14.4 -42 18 -38.4 18 -34 L 18 -18 C 18 -13.6 14.4 -10 10 -10 L -30 -10 C -34.4 -10 -38 -13.6 -38 -18 L -38 -34 C -38 -38.4 -34.4 -42 -30 -42 Z" fill="#07090E" stroke="#00E5FF" stroke-width="2" />
+    <polygon points="18,-32 38,-44 38,-8 18,-20" fill="#07090E" stroke="#00E5FF" stroke-width="2" stroke-linejoin="round" />
+    <circle cx="-10" cy="-26" r="8" fill="none" stroke="#38BDF8" stroke-width="2" />
+
+    <text y="75" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="5">ELEMES CINEMA</text>
+    <text y="105" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="400" letter-spacing="2">BACKDROP PREVIEW UNAVAILABLE</text>
+  </g>
+</svg>
