@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
-import { usePopularPeople } from "@/features/people/hooks/use-people";
-import { PersonCard } from "@/features/people/components/person-card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PersonCard } from "@/features/people/components/person-card";
+import { usePopularPeople } from "@/features/people/hooks/use-people";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 export default function PeoplePage() {
   const [page, setPage] = useState<number>(1);
@@ -20,7 +20,8 @@ export default function PeoplePage() {
           Popular People & Cast
         </h1>
         <p className="mt-1 text-xs sm:text-sm text-slate-400 font-normal">
-          Discover trending actors, directors, and filmmakers across global cinema
+          Discover trending actors, directors, and filmmakers across global
+          cinema
         </p>
       </div>
 
