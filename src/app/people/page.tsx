@@ -16,10 +16,10 @@ export default function PeoplePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
           Popular People & Cast
         </h1>
-        <p className="mt-1 text-xs sm:text-sm text-neutral-400">
+        <p className="mt-1 text-xs sm:text-sm text-slate-400 font-normal">
           Discover trending actors, directors, and filmmakers across global cinema
         </p>
       </div>
@@ -28,7 +28,7 @@ export default function PeoplePage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {Array.from({ length: 20 }).map((_, idx) => (
             <div key={idx} className="space-y-2">
-              <Skeleton className="aspect-[3/4] w-full rounded-xl" />
+              <Skeleton className="aspect-[3/4] w-full rounded-lg" />
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-3 w-1/2" />
             </div>
@@ -44,7 +44,7 @@ export default function PeoplePage() {
 
       {/* Pagination */}
       {data && data.total_pages > 1 && (
-        <div className="flex items-center justify-center gap-3 pt-6 border-t border-neutral-800">
+        <div className="flex items-center justify-center gap-3 pt-6 border-t border-white/10">
           <Button
             variant="secondary"
             size="sm"
@@ -55,9 +55,9 @@ export default function PeoplePage() {
             <span>Previous</span>
           </Button>
 
-          <span className="text-xs text-neutral-400 px-2 font-medium">
+          <span className="text-xs text-slate-400 px-2 font-medium tabular-nums">
             Page <strong className="text-white">{page}</strong> of{" "}
-            <strong className="text-neutral-300">{totalPages}</strong>
+            <strong className="text-slate-300">{totalPages}</strong>
           </span>
 
           <Button

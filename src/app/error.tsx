@@ -17,12 +17,12 @@ export default function GlobalError({
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center text-center px-4 space-y-4">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400">
+      <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-rose-950/60 border border-rose-500/30 text-rose-400">
         <AlertCircle className="h-7 w-7" />
       </div>
       <div className="space-y-1 max-w-md">
-        <h2 className="text-xl font-bold text-white">Something went wrong</h2>
-        <p className="text-xs text-neutral-400">
+        <h2 className="text-xl font-light text-white">Something went wrong</h2>
+        <p className="text-xs text-slate-400 font-normal">
           An unexpected error occurred while fetching media content. Please verify your TMDB API configuration or try again.
         </p>
       </div>

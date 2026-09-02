@@ -3,11 +3,9 @@
 import React from "react";
 import {
   usePopularMovies,
-  useTopRatedMovies,
   useNowPlayingMovies,
-  useUpcomingMovies,
 } from "@/features/movies/hooks/use-movies";
-import { usePopularTv, useTopRatedTv } from "@/features/tv/hooks/use-tv";
+import { useTopRatedTv } from "@/features/tv/hooks/use-tv";
 import { usePopularPeople } from "@/features/people/hooks/use-people";
 import { MovieHero } from "@/features/movies/components/movie-hero";
 import { MovieGrid } from "@/features/movies/components/movie-grid";
@@ -83,7 +81,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
             {Array.from({ length: 6 }).map((_, idx) => (
               <div key={idx} className="space-y-2">
-                <Skeleton className="aspect-[3/4] w-full rounded-xl" />
+                <Skeleton className="aspect-[3/4] w-full rounded-lg" />
                 <Skeleton className="h-4 w-3/4" />
               </div>
             ))}

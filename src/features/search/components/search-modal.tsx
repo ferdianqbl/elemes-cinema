@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, Film, Tv, User, Loader2, ArrowRight } from "lucide-react";
+import { Search, Loader2, ArrowRight } from "lucide-react";
 import { useUiStore } from "@/store/use-ui-store";
 import { useMultiSearch } from "@/features/search/hooks/use-search";
 import { getPosterUrl, getProfileUrl } from "@/lib/tmdb";
@@ -51,31 +51,31 @@ export function SearchModal() {
 
   return (
     <Dialog open={isSearchOpen} onOpenChange={(open) => !open && closeSearch()}>
-      <DialogContent className="sm:max-w-xl bg-neutral-950 border border-neutral-800 p-0 overflow-hidden shadow-2xl rounded-2xl">
-        <DialogHeader className="p-4 border-b border-neutral-800">
+      <DialogContent className="sm:max-w-xl bg-[#07090E] border border-white/10 p-0 overflow-hidden shadow-none rounded-lg">
+        <DialogHeader className="p-4 border-b border-white/10">
           <DialogTitle className="sr-only">Quick Search</DialogTitle>
           <form onSubmit={handleFullSearch} className="relative flex items-center">
-            <Search className="h-5 w-5 text-neutral-400 mr-3 shrink-0" />
+            <Search className="h-5 w-5 text-slate-500 mr-3 shrink-0" />
             <input
               type="text"
               placeholder="Search movies, TV shows, actors..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full bg-transparent text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none"
+              className="w-full bg-transparent text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none font-normal"
               autoFocus
             />
-            {isLoading && <Loader2 className="h-4 w-4 animate-spin text-emerald-500" />}
+            {isLoading && <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />}
           </form>
         </DialogHeader>
 
         {/* Results List */}
-        <div className="max-h-96 overflow-y-auto p-2 divide-y divide-neutral-900">
+        <div className="max-h-96 overflow-y-auto p-2 divide-y divide-white/5">
           {query.trim().length < 2 ? (
-            <div className="p-6 text-center text-xs text-neutral-500">
+            <div className="p-6 text-center text-xs text-slate-500">
               Type at least 2 characters to search...
             </div>
           ) : results.length === 0 && !isLoading ? (
-            <div className="p-6 text-center text-xs text-neutral-400">
+            <div className="p-6 text-center text-xs text-slate-400">
               No results found for &ldquo;{query}&rdquo;
             </div>
           ) : (
@@ -120,10 +120,10 @@ export function SearchModal() {
                   key={`${item.media_type}-${item.id}`}
                   type="button"
                   onClick={() => handleSelect(href)}
-                  className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-900 text-left transition-colors group cursor-pointer"
+                  className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-[#0E121B] text-left transition-colors group cursor-pointer"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="relative h-12 w-9 rounded-md overflow-hidden bg-neutral-900 shrink-0">
+                    <div className="relative h-12 w-9 rounded-[4px] overflow-hidden bg-black shrink-0">
                       <Image
                         src={imageUrl}
                         alt={title}
@@ -134,14 +134,14 @@ export function SearchModal() {
                     </div>
 
                     <div className="min-w-0">
-                      <h4 className="text-xs font-semibold text-neutral-200 group-hover:text-emerald-400 truncate">
+                      <h4 className="text-xs font-semibold text-slate-200 group-hover:text-cyan-400 truncate">
                         {title}
                       </h4>
-                      <div className="flex items-center gap-2 mt-0.5 text-[11px] text-neutral-400">
-                        <span className="capitalize font-medium text-emerald-500/90">
+                      <div className="flex items-center gap-2 mt-0.5 text-[11px] text-slate-400">
+                        <span className="capitalize font-semibold text-cyan-400">
                           {item.media_type}
                         </span>
-                        {releaseDate && <span>• {formatYear(releaseDate)}</span>}
+                        {releaseDate && <span className="tabular-nums">• {formatYear(releaseDate)}</span>}
                         {"known_for_department" in item && (
                           <span>• {item.known_for_department}</span>
                         )}
@@ -153,7 +153,7 @@ export function SearchModal() {
                     {"vote_average" in item && item.vote_average > 0 && (
                       <RatingBadge rating={item.vote_average} showStar={false} />
                     )}
-                    <ArrowRight className="h-3.5 w-3.5 text-neutral-600 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="h-3.5 w-3.5 text-slate-600 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </button>
               );
@@ -162,11 +162,11 @@ export function SearchModal() {
         </div>
 
         {query.trim().length >= 2 && results.length > 0 && (
-          <div className="p-2.5 border-t border-neutral-800/80 bg-neutral-900/40 text-center">
+          <div className="p-2.5 border-t border-white/10 bg-[#0E121B]/40 text-center">
             <button
               type="button"
               onClick={handleFullSearch}
-              className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors inline-flex items-center gap-1"
+              className="text-xs font-semibold uppercase tracking-wider text-cyan-400 hover:text-cyan-300 transition-colors inline-flex items-center gap-1 cursor-pointer"
             >
               <span>View all results for &ldquo;{query}&rdquo;</span>
               <ArrowRight className="h-3 w-3" />

@@ -28,11 +28,11 @@ export function SectionHeader({
       )}
     >
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+        <h2 className="text-xl sm:text-2xl font-light tracking-tight text-white">
           {title}
         </h2>
         {subtitle && (
-          <p className="mt-1 text-xs sm:text-sm text-neutral-400">{subtitle}</p>
+          <p className="mt-1 text-xs sm:text-sm text-slate-400 font-normal">{subtitle}</p>
         )}
       </div>
 
@@ -41,7 +41,7 @@ export function SectionHeader({
         {actionHref && (
           <Link
             href={actionHref}
-            className="group inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+            className="group inline-flex items-center gap-1 text-xs uppercase tracking-wider font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
           >
             <span>{actionLabel}</span>
             <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />

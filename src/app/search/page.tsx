@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, Film, Tv, User, Loader2 } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { useMultiSearch } from "@/features/search/hooks/use-search";
 import { MovieCard } from "@/features/movies/components/movie-card";
 import { TvCard } from "@/features/tv/components/tv-card";
@@ -60,10 +60,10 @@ export default function SearchPage() {
     <div className="space-y-8">
       {/* Search Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
           Search Catalog
         </h1>
-        <p className="mt-1 text-xs sm:text-sm text-neutral-400">
+        <p className="mt-1 text-xs sm:text-sm text-slate-400 font-normal">
           Find movies, TV series, actors, and directors from TMDB database
         </p>
       </div>
@@ -75,21 +75,21 @@ export default function SearchPage() {
           placeholder="Type movie, TV series, or actor name..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="h-12 rounded-2xl bg-neutral-900/90 pl-11 pr-4 text-base border-neutral-700/80 focus-visible:ring-emerald-500"
+          className="h-12 rounded-lg bg-[#07090E] pl-11 pr-4 text-sm border-white/10 text-white placeholder:text-slate-500 focus-visible:border-cyan-400 focus-visible:ring-cyan-400/30"
         />
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
       </form>
 
       {/* Filter Tabs */}
       {searchInput.trim().length >= 2 && (
-        <div className="flex flex-wrap items-center gap-2 border-b border-neutral-800 pb-3">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10 w-fit">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "all"
-                ? "bg-emerald-500 text-neutral-950 font-semibold"
-                : "bg-neutral-900 text-neutral-400 hover:text-white"
+                ? "bg-cyan-400 text-neutral-950 font-bold"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             All Results ({results.length})
@@ -97,10 +97,10 @@ export default function SearchPage() {
           <button
             type="button"
             onClick={() => setActiveTab("movie")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "movie"
-                ? "bg-emerald-500 text-neutral-950 font-semibold"
-                : "bg-neutral-900 text-neutral-400 hover:text-white"
+                ? "bg-cyan-400 text-neutral-950 font-bold"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             Movies ({movies.length})
@@ -108,10 +108,10 @@ export default function SearchPage() {
           <button
             type="button"
             onClick={() => setActiveTab("tv")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "tv"
-                ? "bg-emerald-500 text-neutral-950 font-semibold"
-                : "bg-neutral-900 text-neutral-400 hover:text-white"
+                ? "bg-cyan-400 text-neutral-950 font-bold"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             TV Series ({tvShows.length})
@@ -119,10 +119,10 @@ export default function SearchPage() {
           <button
             type="button"
             onClick={() => setActiveTab("person")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "person"
-                ? "bg-emerald-500 text-neutral-950 font-semibold"
-                : "bg-neutral-900 text-neutral-400 hover:text-white"
+                ? "bg-cyan-400 text-neutral-950 font-bold"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             People ({people.length})
@@ -133,17 +133,17 @@ export default function SearchPage() {
       {/* Loading state */}
       {isLoading && (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+          <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
         </div>
       )}
 
       {/* Empty State */}
       {!isLoading && searchInput.trim().length >= 2 && displayedResults.length === 0 && (
         <div className="py-20 text-center space-y-2">
-          <p className="text-base font-semibold text-white">
+          <p className="text-base font-light text-white">
             No results found for &ldquo;{searchInput}&rdquo;
           </p>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-slate-400">
             Try checking for spelling errors or searching for a different keyword.
           </p>
         </div>

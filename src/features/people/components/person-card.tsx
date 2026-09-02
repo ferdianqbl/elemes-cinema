@@ -20,30 +20,30 @@ export function PersonCard({ person }: PersonCardProps) {
   return (
     <Link
       href={`/people/${person.id}`}
-      className="group relative flex flex-col rounded-xl overflow-hidden bg-neutral-900/60 border border-neutral-800/80 transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/5"
+      className="group relative flex flex-col rounded-lg overflow-hidden bg-[#07090E] border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/60"
     >
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-950">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-black">
         <Image
           src={profileUrl}
           alt={person.name}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 group-hover:scale-103"
           unoptimized={profileUrl.startsWith("/placeholder")}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
       </div>
 
       <div className="flex flex-1 flex-col justify-between p-3">
         <div>
-          <h3 className="text-sm font-semibold text-neutral-100 group-hover:text-emerald-400 line-clamp-1 transition-colors">
+          <h3 className="text-sm font-semibold text-white group-hover:text-cyan-400 line-clamp-1 transition-colors">
             {person.name}
           </h3>
-          <p className="mt-0.5 text-xs text-emerald-400/90 font-medium">
+          <p className="mt-0.5 text-xs text-cyan-400 font-medium">
             {person.known_for_department}
           </p>
           {knownForTitles && (
-            <p className="mt-1 text-[11px] text-neutral-400 line-clamp-1">
+            <p className="mt-1 text-[11px] text-slate-400 line-clamp-1">
               {knownForTitles}
             </p>
           )}

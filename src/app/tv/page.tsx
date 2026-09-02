@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useTvByCategory } from "@/features/tv/hooks/use-tv";
 import { TvCategory } from "@/features/tv/types/tv.types";
 import { TvGrid } from "@/features/tv/components/tv-grid";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TV_CATEGORIES } from "@/lib/constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,8 +16,8 @@ export default function TvPage() {
     page,
   });
 
-  const handleCategoryChange = (val: string) => {
-    setActiveCategory(val as TvCategory);
+  const handleCategoryChange = (val: TvCategory) => {
+    setActiveCategory(val);
     setPage(1);
   };
 
@@ -29,28 +28,34 @@ export default function TvPage() {
       {/* Category Header with Tabs */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
             TV Shows Catalog
           </h1>
-          <p className="mt-1 text-xs sm:text-sm text-neutral-400">
+          <p className="mt-1 text-xs sm:text-sm text-slate-400 font-normal">
             Browse trending television series, live broadcasts, and top rated seasons
           </p>
         </div>
 
-        {/* Tab Filters */}
-        <Tabs value={activeCategory} onValueChange={handleCategoryChange}>
-          <TabsList className="flex-wrap bg-neutral-900 border border-neutral-800 p-1">
-            {TV_CATEGORIES.map((cat) => (
-              <TabsTrigger
+        {/* Tab Filters (Pill Switcher) */}
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10 w-fit">
+          {TV_CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
                 key={cat.id}
-                value={cat.id}
-                className="data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+                type="button"
+                onClick={() => handleCategoryChange(cat.id as TvCategory)}
+                className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-cyan-400 text-neutral-950 font-bold"
+                    : "text-slate-400 hover:text-white"
+                }`}
               >
                 {cat.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* TV Grid */}
@@ -58,7 +63,7 @@ export default function TvPage() {
 
       {/* Pagination Controls */}
       {data && data.total_pages > 1 && (
-        <div className="flex items-center justify-center gap-3 pt-6 border-t border-neutral-800">
+        <div className="flex items-center justify-center gap-3 pt-6 border-t border-white/10">
           <Button
             variant="secondary"
             size="sm"
@@ -69,9 +74,9 @@ export default function TvPage() {
             <span>Previous</span>
           </Button>
 
-          <span className="text-xs text-neutral-400 px-2 font-medium">
+          <span className="text-xs text-slate-400 px-2 font-medium tabular-nums">
             Page <strong className="text-white">{page}</strong> of{" "}
-            <strong className="text-neutral-300">{totalPages}</strong>
+            <strong className="text-slate-300">{totalPages}</strong>
           </span>
 
           <Button

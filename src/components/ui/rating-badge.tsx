@@ -16,25 +16,22 @@ export function RatingBadge({
   showStar = true,
 }: RatingBadgeProps) {
   const numericRating = rating || 0;
-  const isHigh = numericRating >= 7.5;
-  const isMid = numericRating >= 5.0 && numericRating < 7.5;
+  const isHigh = numericRating >= 7.0;
 
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold backdrop-blur-md",
+        "inline-flex items-center gap-1 rounded-[4px] px-2 py-0.5 text-xs font-semibold backdrop-blur-md",
         isHigh
-          ? "bg-emerald-950/80 text-emerald-400 border border-emerald-500/30"
-          : isMid
-          ? "bg-amber-950/80 text-amber-400 border border-amber-500/30"
-          : "bg-red-950/80 text-red-400 border border-red-500/30",
+          ? "bg-amber-950/90 text-amber-400 border border-amber-500/40"
+          : "bg-cyan-950/90 text-cyan-400 border border-cyan-500/40",
         className
       )}
     >
       {showStar && <Star className="h-3 w-3 fill-current text-current" />}
-      <span>{formatRating(numericRating)}</span>
+      <span className="tabular-nums font-bold">{formatRating(numericRating)}</span>
       {count !== undefined && (
-        <span className="text-[10px] opacity-70 font-normal">
+        <span className="text-[10px] opacity-70 font-normal tabular-nums">
           ({count.toLocaleString()})
         </span>
       )}

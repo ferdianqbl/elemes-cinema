@@ -33,10 +33,10 @@ export function WatchlistButton({
         type="button"
         onClick={handleClick}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer select-none",
+          "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs uppercase tracking-wider font-semibold transition-all duration-200 cursor-pointer select-none active:scale-[0.98]",
           isInWatchlist
-            ? "bg-emerald-500 text-neutral-950 shadow-md shadow-emerald-500/20 hover:bg-emerald-400"
-            : "bg-neutral-800 text-neutral-100 hover:bg-neutral-700 border border-neutral-700/60",
+            ? "bg-cyan-400 text-neutral-950 font-bold hover:bg-cyan-300"
+            : "bg-[#0E121B] text-slate-200 hover:bg-[#151B28] hover:text-white border border-white/10 hover:border-cyan-500/30",
           className
         )}
       >
@@ -63,8 +63,8 @@ export function WatchlistButton({
       className={cn(
         "flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-md transition-all duration-200 cursor-pointer shadow-md",
         isInWatchlist
-          ? "bg-emerald-500 text-neutral-950 hover:bg-emerald-400"
-          : "bg-black/60 text-white hover:bg-black/80 hover:text-emerald-400 border border-white/10",
+          ? "bg-cyan-400 text-neutral-950 hover:bg-cyan-300"
+          : "bg-black/70 text-white hover:bg-black/90 hover:text-cyan-400 border border-white/10",
         className
       )}
     >
