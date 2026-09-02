@@ -1,99 +1,171 @@
-# Elemes Cinema — Movie & TV Show Catalog Web App
+# 🎬 Elemes Cinema — Movie & TV Show Catalog Web App
 
-A responsive, high-performance web application showcasing movies, TV shows, cast details, and entertainment discovery powered by the **The Movie Database (TMDB) API**.
-
-Built for **Frontend Developer Test (Middle Level)** at **Elemes**.
+A modern, high-performance cinema streaming and media discovery web application built for the **Frontend Developer Test (Middle Level)** at **Elemes**. Powered by **The Movie Database (TMDB) API**, **Next.js 16 (Turbopack)**, **React 19**, **TanStack React Query v5**, **Zustand**, and the custom **Elemes Cinema Design System (ECDS) — "Midnight Cyan"**.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## 📚 Project Documentation Hub
 
-- **Framework:** [Next.js 15 (App Router)](https://nextjs.org/) + [React 19](https://react.dev/)
-- **Language:** [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
-- **Data Fetching & Caching:** [TanStack React Query v5](https://tanstack.com/query/latest)
-- **HTTP Client:** [Axios](https://axios-http.com/) (Centralized API client with auth interceptors)
-- **State Management:** [Zustand](https://zustand-demo.pmnd.rs/) with `persist` middleware (Watchlist & UI state)
-- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-- **Icons:** [Lucide React](https://lucide.dev/)
+Complete technical specifications and validation matrices are available in the [`docs/`](./docs) directory:
 
----
-
-## 🎯 Features & Requirements Covered
-
-### 1. TMDB API Integration (10+ Endpoints)
-- **Movies:**
-  - `GET /movie/popular` — Popular movies
-  - `GET /movie/top_rated` — Top rated movies
-  - `GET /movie/now_playing` — Now playing movies
-  - `GET /movie/upcoming` — Upcoming movies
-  - `GET /movie/{id}` — Movie details
-  - `GET /movie/{id}/credits` — Cast and crew
-  - `GET /movie/{id}/videos` — Trailers and teasers
-  - `GET /movie/{id}/similar` — Similar recommendations
-- **TV Shows:**
-  - `GET /tv/popular` — Popular TV shows
-  - `GET /tv/top_rated` — Top rated TV shows
-  - `GET /tv/on_the_air` — Currently airing TV shows
-  - `GET /tv/airing_today` — Shows broadcasting today
-  - `GET /tv/{id}` — TV show details and seasons
-  - `GET /tv/{id}/credits` — TV cast and creators
-- **People:**
-  - `GET /person/popular` — Trending actors and filmmakers
-  - `GET /person/{id}` — Person details and bio
-- **Search:**
-  - `GET /search/multi` — Unified search across movies, TV, and people
-
-### 2. Core Capabilities & UX
-- **Dynamic Watchlist:** Add/remove items with persistent `localStorage` storage via Zustand.
-- **Search & Filter:** Live multi-search with category tabs (All, Movies, TV, People).
-- **Responsive Media Sliders & Grids:** Adaptive layouts for mobile, tablet, and desktop.
-- **Video Trailers:** Embedded YouTube player on movie and TV detail pages.
-- **Accessible & Semantic HTML:** Proper landmarks (`<header>`, `<main>`, `<footer>`, `<section>`, `<nav>`), ARIA labels, and keyboard navigability.
-- **Skeleton Loading & Error Boundaries:** Polished fallback UI for async states.
+| Document | Description | Link |
+|---|---|---|
+| **Product Requirements Document** | Complete feature list, user personas, TMDB endpoints matrix, and non-functional requirements. | [📄 `docs/PRD.md`](./docs/PRD.md) |
+| **System Architecture & Blueprint** | Technical stack breakdown, feature-driven folder structure, data flow, and naming standards. | [🏛️ `docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) |
+| **Elemes Cinema Design System (ECDS)** | Canonical "Midnight Cyan" cinema dark-mode tokens, typography, radii rules, and components. | [🎨 `docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md) |
+| **Feature Validations & Testing Matrix** | Step-by-step test matrix, edge cases, accessibility audit, and submission checklist. | [🧪 `docs/FEATURE_VALIDATIONS.md`](./docs/FEATURE_VALIDATIONS.md) |
 
 ---
 
-## 📁 Folder Structure
+## 🛠️ Technology Stack & Rationale
 
-Structured similarly to the modular feature-driven pattern:
+```
+┌─────────────────────────────────────────────────────────────┐
+│               Next.js 16.2.9 + React 19.2.0                 │
+│                 (App Router with Turbopack)                 │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+       ┌───────────────────────┼───────────────────────┐
+       ▼                       ▼                       ▼
+┌──────────────┐       ┌──────────────┐        ┌──────────────┐
+│  Tailwind v4 │       │  TanStack Q5 │        │  Zustand v5  │
+│  + shadcn/ui │       │ (Async SWR & │        │ (Watchlist & │
+│ (ECDS Theme) │       │ 5m StaleTime)│        │   UI State)  │
+└──────────────┘       └───────┬──────┘        └──────────────┘
+                               │
+                               ▼
+                       ┌──────────────┐
+                       │ Axios Client │
+                       │ (TMDB Auth)  │
+                       └───────┬──────┘
+                               │
+                               ▼
+                       ┌──────────────┐
+                       │   TMDB API   │
+                       │ (Remote REST)│
+                       └──────────────┘
+```
+
+* **Framework:** [Next.js 16.2.9 (App Router)](https://nextjs.org/) with high-speed **Turbopack** compilation.
+* **UI Engine:** [React 19.2.0](https://react.dev/) utilizing modern hydration and concurrent transitions.
+* **Language:** [TypeScript 5](https://www.typescriptlang.org/) in strict mode with exhaustive TMDB entity models.
+* **Styling & Components:** [Tailwind CSS v4](https://tailwindcss.com/) + [shadcn/ui (Base UI)](https://ui.shadcn.com/) configured with the ECDS Midnight Cyan design system.
+* **Server State & Caching:** [TanStack React Query v5](https://tanstack.com/query/latest) with a 5-minute stale-time caching strategy and deterministic query key factories.
+* **HTTP Client:** [Axios](https://axios-http.com/) configured with request/response interceptors for TMDB v4 Bearer Tokens and v3 API Key fallbacks.
+* **Client State & Persistence:** [Zustand v5](https://zustand-demo.pmnd.rs/) with `persist` middleware for zero-friction `localStorage` synchronization.
+* **Iconography:** [Lucide React](https://lucide.dev/).
+
+---
+
+## 🎯 Integrated Features & TMDB Endpoints
+
+The project integrates **12 TMDB API endpoints**, exceeding the 4-endpoint minimum required by the assessment:
+
+### 1. Movies Domain (`/movies` & `/movies/[id]`)
+- `GET /movie/popular` — Trending & popular movies
+- `GET /movie/top_rated` — Critically acclaimed movies
+- `GET /movie/now_playing` — Currently playing in theaters (powers Home Featured Hero)
+- `GET /movie/upcoming` — Upcoming cinema releases
+- `GET /movie/{id}` — In-depth details, runtime, budget, revenue, genres
+- `GET /movie/{id}/credits` — Top 10 cast filmography and characters
+- `GET /movie/{id}/videos` — Official YouTube video trailers and teasers
+- `GET /movie/{id}/similar` — Recommended similar movies
+
+### 2. TV Series Domain (`/tv` & `/tv/[id]`)
+- `GET /tv/popular` — Popular television shows
+- `GET /tv/top_rated` — Highest-rated TV series
+- `GET /tv/on_the_air` — Shows currently broadcasting episodes
+- `GET /tv/airing_today` — Episodes airing today
+- `GET /tv/{id}` — Show details, creators, and complete season/episode guide
+- `GET /tv/{id}/credits` — Starring and recurring series cast
+- `GET /tv/{id}/videos` — Official TV show trailers
+
+### 3. People & Celebrities Domain (`/people` & `/people/[id]`)
+- `GET /person/popular` — Trending global actors and directors
+- `GET /person/{id}` — Actor biography, birth place, birthday, and alias names
+- `GET /person/{id}/combined_credits` — Comprehensive cross-media filmography
+
+### 4. Search Engine (`/search` & Quick `⌘K` Modal)
+- `GET /search/multi` — Unified live search querying movies, TV series, and cast simultaneously with category filter tabs (`All`, `Movies`, `TV`, `People`).
+
+### 5. LocalStorage Watchlist (`/watchlist`)
+- Reactive bookmarking stored in `localStorage` via Zustand with live navbar badge counter and media-type filtering (`All`, `Movies`, `TV`).
+
+---
+
+## 🎨 Design System: "Midnight Cyan" (ECDS)
+
+The interface follows the **Elemes Cinema Design System (ECDS)** inspired by the HBO Max cinema-dark architecture:
+
+* **Obsidian Canvas (`#000000`):** Pure black base letting poster artwork illuminate like theater screens.
+* **Abyss Surface (`#07090E`):** Elevated cards, dropdown menus, and search dialog chrome.
+* **Electric Cyan (`#00E5FF`):** Signature primary CTA button fill, active tab indicators, focus rings, and switches.
+* **Marquee Gold (`#F59E0B`):** Star ratings ($\ge 7.0$) and critically acclaimed score badges.
+* **Strict Radii Hierarchy:** $8\text{px}$ for buttons and media cards, $100\text{px}$ (`rounded-full`) for pill category toggles, $4\text{px}$ for micro tags. Zero mixed arbitrary radii.
+* **Contrast-Driven Elevation:** Zero artificial drop shadows — depth is established strictly through high-contrast surface polarity and hairline borders (`border-white/10`).
+
+👉 Read full design tokens in [📄 `docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md).
+
+---
+
+## 📁 Feature-Driven Directory Structure
 
 ```
 workspace/
-├── public/                 # Static assets & placeholders
+├── docs/                                  # Comprehensive Documentation Hub
+│   ├── PRD.md                             # Product Requirements Document
+│   ├── ARCHITECTURE.md                    # System Architecture Blueprint
+│   ├── DESIGN_SYSTEM.md                   # Elemes Cinema Design System Specification
+│   └── FEATURE_VALIDATIONS.md             # Quality Assurance & Test Guide
+├── public/                                # Static assets & placeholder images
 ├── src/
-│   ├── app/                # Next.js App Router pages
-│   │   ├── layout.tsx      # Root layout + Providers
-│   │   ├── globals.css     # Tailwind styling
-│   │   ├── page.tsx        # Home overview & featured banner
-│   │   ├── movies/         # Movies catalog & [id] detail
-│   │   ├── tv/             # TV catalog & [id] detail
-│   │   ├── people/         # Popular celebrities
-│   │   ├── search/         # Multi-search page
-│   │   └── watchlist/      # Saved media list
-│   ├── components/         # Shared & layout UI
-│   │   ├── ui/             # Button, Badge, RatingBadge, Skeleton, Tabs, Input
-│   │   └── layout/         # Navbar, Footer, SectionHeader
-│   ├── features/           # Modular domain architecture
-│   │   ├── movies/         # Services, Hooks, Types, Components
-│   │   ├── tv/             # Services, Hooks, Types, Components
-│   │   ├── people/         # Services, Hooks, Types, Components
-│   │   ├── search/         # Services, Hooks, Types, Components
-│   │   └── watchlist/      # Store, Components, Views
-│   ├── lib/
-│   │   ├── axios.ts        # Configured Axios instance with interceptors
-│   │   ├── tmdb.ts         # TMDB image helpers (posters, backdrops)
-│   │   ├── constants.ts    # Categories, genres, nav links
-│   │   └── utils.ts        # Formatting & className helpers
-│   ├── providers/
-│   │   └── query-provider.tsx  # TanStack Query client & devtools
-│   ├── store/
-│   │   ├── use-watchlist-store.ts # Persistent watchlist store
-│   │   └── use-ui-store.ts        # UI modal & navigation state
-│   └── types/              # Global API and common media types
-├── .env.example
-├── next.config.ts
-├── package.json
-└── tsconfig.json
+│   ├── app/                               # Next.js 16 App Router Route Tree
+│   │   ├── layout.tsx                     # Global Root Layout (QueryProvider, Tooltips, Nav)
+│   │   ├── globals.css                    # Tailwind v4 theme variables & base styles
+│   │   ├── page.tsx                       # Home page (Hero banner, curated shelves)
+│   │   ├── movies/
+│   │   │   ├── page.tsx                   # Movies Catalog (Category tabs & pagination)
+│   │   │   └── [id]/page.tsx              # Movie Details (trailers, cast, similar)
+│   │   ├── tv/
+│   │   │   ├── page.tsx                   # TV Shows Catalog (Category tabs & pagination)
+│   │   │   └── [id]/page.tsx              # TV Show Details (seasons, episodes, cast)
+│   │   ├── people/
+│   │   │   ├── page.tsx                   # Popular celebrities gallery
+│   │   │   └── [id]/page.tsx              # Actor profile & filmography
+│   │   ├── search/
+│   │   │   └── page.tsx                   # Dedicated multi-search engine
+│   │   ├── watchlist/
+│   │   │   └── page.tsx                   # Persistent Saved Watchlist view
+│   │   ├── loading.tsx                    # Route loading skeleton spinner
+│   │   ├── error.tsx                      # Global error boundary with retry
+│   │   └── not-found.tsx                  # Custom 404 page
+│   │
+│   ├── components/                        # Shared UI Components
+│   │   ├── ui/                            # shadcn/ui primitives (button, badge, dialog, tabs)
+│   │   └── layout/                        # Navbar, Footer, SectionHeader
+│   │
+│   ├── features/                          # Feature Domain Modules
+│   │   ├── movies/                        # Components, Hooks, Services, Types
+│   │   ├── tv/                            # Components, Hooks, Services, Types
+│   │   ├── people/                        # Components, Hooks, Services, Types
+│   │   ├── search/                        # Quick search modal, Hooks, Services, Types
+│   │   └── watchlist/                     # Watchlist buttons, View, Store
+│   │
+│   ├── lib/                               # Core Utilities
+│   │   ├── axios.ts                       # Axios client with TMDB auth interceptors
+│   │   ├── tmdb.ts                        # TMDB image sizing & video URL builders
+│   │   ├── constants.ts                   # Navigation links, genres, category maps
+│   │   └── utils.ts                       # Formatters for date, runtime, currency, ratings
+│   │
+│   ├── providers/                         # Providers (TanStack Query Client)
+│   ├── store/                             # Global Zustand Stores (Watchlist & UI State)
+│   └── types/                             # Global TypeScript Contracts & API Responses
+├── .env.example                           # Environment variables schema
+├── components.json                        # shadcn/ui configuration
+├── next.config.ts                         # TMDB Image domain allowlist
+├── package.json                           # Dependencies & scripts
+├── postcss.config.mjs                     # Tailwind PostCSS configuration
+└── tsconfig.json                          # TypeScript configuration with @/* path aliases
 ```
 
 ---
@@ -101,28 +173,29 @@ workspace/
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
-- Node.js `18.17+` or `20+`
-- A free TMDB API Key / Access Token from [The Movie Database](https://www.themoviedb.org/settings/api).
+* **Node.js:** `18.18+` or `20+` / `22+`
+* **Package Manager:** `npm` (or `pnpm` / `yarn`)
+* **TMDB API Account:** Free account from [The Movie Database (TMDB)](https://www.themoviedb.org/settings/api).
 
-### 2. Environment Setup
-Copy the example environment file:
+### 2. Environment Configuration
+Copy `.env.example` to `.env.local`:
 ```bash
 cp .env.example .env.local
 ```
 
-Fill in your TMDB credentials in `.env.local`:
+Populate your TMDB credentials in `.env.local`:
 ```env
 NEXT_PUBLIC_TMDB_API_BASE_URL=https://api.themoviedb.org/3
 NEXT_PUBLIC_TMDB_IMAGE_BASE_URL=https://image.tmdb.org/t/p
 
 # TMDB API Read Access Token (v4 - Recommended)
-NEXT_PUBLIC_TMDB_ACCESS_TOKEN=your_v4_bearer_token_here
+NEXT_PUBLIC_TMDB_ACCESS_TOKEN=your_tmdb_v4_bearer_token_here
 
 # OR TMDB API Key (v3 fallback)
-NEXT_PUBLIC_TMDB_API_KEY=your_v3_api_key_here
+NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_v3_api_key_here
 ```
 
-### 3. Install Dependencies
+### 3. Installation
 ```bash
 npm install
 ```
@@ -138,3 +211,23 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 npm run build
 npm run start
 ```
+
+---
+
+## 🧪 Testing & Verification
+
+For detailed test procedures, responsive audits, accessibility verification, and edge-case testing, refer to [🧪 `docs/FEATURE_VALIDATIONS.md`](./docs/FEATURE_VALIDATIONS.md).
+
+```bash
+# Production build test with 0 errors
+npm run build
+```
+
+---
+
+## 📬 Submission Info
+
+* **Candidate:** Ferdian Iqbal
+* **Assessment:** Frontend Developer Technical Test (Middle Level)
+* **Company:** Elemes (`alifa@elemes.id`)
+* **Repository:** [https://github.com/ferdianqbl/elemes-cinema](https://github.com/ferdianqbl/elemes-cinema)
