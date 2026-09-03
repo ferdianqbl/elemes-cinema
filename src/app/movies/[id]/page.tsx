@@ -11,10 +11,12 @@ import {
   useSimilarMovies,
 } from "@/features/movies/hooks/use-movies";
 import { getBackdropUrl, getPosterUrl, getProfileUrl, getYouTubeEmbedUrl } from "@/lib/tmdb";
-import { formatDate, formatRuntime, formatCurrency } from "@/lib/utils";
+import { formatDate, formatRuntime, formatCurrency, cn } from "@/lib/utils";
+import { calculateBoxOfficeRoi } from "@/lib/analytics";
 import { RatingBadge } from "@/components/ui/rating-badge";
 import { WatchlistButton } from "@/features/watchlist/components/watchlist-button";
 import { MovieCard } from "@/features/movies/components/movie-card";
+import { AmbientGlow } from "@/components/ui/ambient-glow";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeader } from "@/components/layout/section-header";
 
@@ -61,6 +63,7 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
 
   const backdropUrl = getBackdropUrl(movie.backdrop_path, "original");
   const posterUrl = getPosterUrl(movie.poster_path, "w500");
+  const roi = calculateBoxOfficeRoi(movie.budget, movie.revenue);
   const trailer = videos?.results?.find(
     (v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser")
   );
@@ -79,6 +82,8 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
 
       {/* Main Details Section */}
       <div className="relative rounded-lg overflow-hidden border border-white/10 bg-[#07090E] p-6 md:p-10">
+        <AmbientGlow intensity="medium" color="cyan" className="-top-12 -bottom-12" />
+
         {/* Ambient Backdrop Blurred */}
         <div className="absolute inset-0 -z-10 overflow-hidden opacity-20">
           <Image
@@ -122,6 +127,16 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
                 <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-[4px] bg-cyan-950/80 text-cyan-400 border border-cyan-500/30">
                   {movie.status}
                 </span>
+                {roi.status !== "unavailable" && (
+                  <span
+                    className={cn(
+                      "text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-[4px] border",
+                      roi.badgeColor
+                    )}
+                  >
+                    {roi.label}
+                  </span>
+                )}
               </div>
 
               <h1 className="text-2xl sm:text-4xl font-light text-white tracking-tight">
@@ -156,29 +171,63 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
                 </p>
               </div>
 
+              {/* Commercial Box Office Performance Bar */}
+              {movie.budget > 0 && movie.revenue > 0 && (
+                <div className="p-3.5 rounded-lg bg-[#0E121B] border border-white/10 space-y-2.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-300">
+                      Box Office Commercial Performance
+                    </span>
+                    <span
+                      className={cn(
+                        "text-xs font-bold tabular-nums",
+                        roi.status === "deficit" ? "text-rose-400" : "text-emerald-400"
+                      )}
+                    >
+                      {roi.profit >= 0
+                        ? `+${formatCurrency(roi.profit)} Net Profit`
+                        : `-${formatCurrency(Math.abs(roi.profit))} Deficit`}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="p-2 rounded-[4px] bg-black/60 border border-white/5">
+                      <span className="text-[10px] text-slate-500 uppercase block">Budget</span>
+                      <span className="font-semibold text-slate-200 tabular-nums">
+                        {formatCurrency(movie.budget)}
+                      </span>
+                    </div>
+                    <div className="p-2 rounded-[4px] bg-black/60 border border-white/5">
+                      <span className="text-[10px] text-slate-500 uppercase block">Worldwide Gross</span>
+                      <span className="font-semibold text-slate-200 tabular-nums">
+                        {formatCurrency(movie.revenue)}
+                      </span>
+                    </div>
+                    <div className="p-2 rounded-[4px] bg-black/60 border border-white/5">
+                      <span className="text-[10px] text-slate-500 uppercase block">Return Multiple</span>
+                      <span className="font-semibold text-cyan-400 tabular-nums">
+                        {roi.multiplier}x ROI
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Key Metadata Table */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-white/10 text-xs">
-                {movie.budget > 0 && (
-                  <div>
-                    <span className="text-slate-500 block">Budget</span>
-                    <span className="font-semibold text-slate-200 tabular-nums">
-                      {formatCurrency(movie.budget)}
-                    </span>
-                  </div>
-                )}
-                {movie.revenue > 0 && (
-                  <div>
-                    <span className="text-slate-500 block">Revenue</span>
-                    <span className="font-semibold text-slate-200 tabular-nums">
-                      {formatCurrency(movie.revenue)}
-                    </span>
-                  </div>
-                )}
                 {movie.spoken_languages?.length > 0 && (
                   <div>
                     <span className="text-slate-500 block">Original Language</span>
                     <span className="font-semibold text-slate-200">
                       {movie.spoken_languages[0].english_name}
+                    </span>
+                  </div>
+                )}
+                {movie.production_companies?.length > 0 && (
+                  <div>
+                    <span className="text-slate-500 block">Production Studio</span>
+                    <span className="font-semibold text-slate-200 line-clamp-1">
+                      {movie.production_companies[0].name}
                     </span>
                   </div>
                 )}

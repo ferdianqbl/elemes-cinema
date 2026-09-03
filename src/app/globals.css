@@ -94,8 +94,8 @@
   --primary-foreground: oklch(0.05 0 0);
   --secondary: oklch(0.14 0.02 250);
   --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.14 0.02 250);
-  --muted-foreground: oklch(0.68 0.02 250);
+  --muted: oklch(0.24 0.02 250);
+  --muted-foreground: oklch(0.72 0.02 250);
   --accent: oklch(0.16 0.03 240);
   --accent-foreground: oklch(0.85 0.17 215);
   --destructive: oklch(0.63 0.24 25);
@@ -116,12 +116,35 @@
   --primary-foreground: oklch(0.05 0 0);
   --secondary: oklch(0.14 0.02 250);
   --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.14 0.02 250);
-  --muted-foreground: oklch(0.68 0.02 250);
+  --muted: oklch(0.24 0.02 250);
+  --muted-foreground: oklch(0.72 0.02 250);
   --accent: oklch(0.16 0.03 240);
   --accent-foreground: oklch(0.85 0.17 215);
   --destructive: oklch(0.63 0.24 25);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.85 0.17 215);
+}
+
+/* Cinephile Marquee Top 10 Number Styling */
+.font-marquee-number {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Impact", "Arial Black", sans-serif;
+  -webkit-text-stroke: 2px rgba(0, 229, 255, 0.45);
+  color: transparent;
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+  line-height: 0.85;
+}
+
+.font-marquee-number:hover {
+  -webkit-text-stroke: 2px #00e5ff;
+  text-shadow: 0 0 30px rgba(0, 229, 255, 0.45);
+}
+
+/* Hide scrollbar for clean carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

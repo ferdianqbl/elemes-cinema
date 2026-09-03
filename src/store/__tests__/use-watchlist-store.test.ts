@@ -11,7 +11,7 @@ describe("useWatchlistStore (Zustand with LocalStorage)", () => {
     expect(items).toEqual([]);
   });
 
-  it("should add a movie item to watchlist", () => {
+  it("should add a movie item to watchlist with default want_to_watch status", () => {
     useWatchlistStore.getState().addItem({
       id: 101,
       title: "Inception",
@@ -26,7 +26,31 @@ describe("useWatchlistStore (Zustand with LocalStorage)", () => {
     const items = useWatchlistStore.getState().items;
     expect(items.length).toBe(1);
     expect(items[0].title).toBe("Inception");
+    expect(items[0].status).toBe("want_to_watch");
     expect(useWatchlistStore.getState().isInWatchlist(101, "movie")).toBe(true);
+  });
+
+  it("should toggle watched status between want_to_watch and watched", () => {
+    useWatchlistStore.getState().addItem({
+      id: 101,
+      title: "Inception",
+      poster_path: "/inception.jpg",
+      backdrop_path: null,
+      vote_average: 8.8,
+      release_date: "2010-07-16",
+      media_type: "movie",
+      overview: "Overview",
+    });
+
+    expect(useWatchlistStore.getState().items[0].status).toBe("want_to_watch");
+
+    // Toggle to watched
+    useWatchlistStore.getState().toggleWatchedStatus(101, "movie");
+    expect(useWatchlistStore.getState().items[0].status).toBe("watched");
+
+    // Toggle back to want_to_watch
+    useWatchlistStore.getState().toggleWatchedStatus(101, "movie");
+    expect(useWatchlistStore.getState().items[0].status).toBe("want_to_watch");
   });
 
   it("should remove an item from watchlist", () => {

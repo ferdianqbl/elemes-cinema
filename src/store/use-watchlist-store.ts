@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { MediaType } from "@/types/common.types";
 
+export type WatchlistStatus = "want_to_watch" | "watched";
+
 export interface WatchlistItem {
   id: number;
   title: string;
@@ -12,6 +14,7 @@ export interface WatchlistItem {
   media_type: MediaType;
   overview?: string;
   addedAt: string;
+  status?: WatchlistStatus;
 }
 
 interface WatchlistState {
@@ -19,6 +22,7 @@ interface WatchlistState {
   addItem: (item: Omit<WatchlistItem, "addedAt">) => void;
   removeItem: (id: number, mediaType: MediaType) => void;
   toggleItem: (item: Omit<WatchlistItem, "addedAt">) => void;
+  toggleWatchedStatus: (id: number, mediaType: MediaType) => void;
   isInWatchlist: (id: number, mediaType: MediaType) => boolean;
   clearWatchlist: () => void;
 }
@@ -36,6 +40,7 @@ export const useWatchlistStore = create<WatchlistState>()(
             items: [
               {
                 ...item,
+                status: item.status || "want_to_watch",
                 addedAt: new Date().toISOString(),
               },
               ...state.items,
@@ -56,6 +61,17 @@ export const useWatchlistStore = create<WatchlistState>()(
           get().addItem(item);
         }
       },
+      toggleWatchedStatus: (id, mediaType) =>
+        set((state) => ({
+          items: state.items.map((item) => {
+            if (item.id === id && item.media_type === mediaType) {
+              const nextStatus: WatchlistStatus =
+                item.status === "watched" ? "want_to_watch" : "watched";
+              return { ...item, status: nextStatus };
+            }
+            return item;
+          }),
+        })),
       isInWatchlist: (id, mediaType) => {
         return get().items.some(
           (item) => item.id === id && item.media_type === mediaType
