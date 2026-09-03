@@ -1,70 +1,3 @@
-export interface BoxOfficeRoiResult {
-  multiplier: number;
-  label: string;
-  status: "blockbuster" | "profitable" | "breakeven" | "deficit" | "unavailable";
-  badgeColor: string;
-  profit: number;
-}
-
-/**
- * Calculates Box Office Return on Investment based on TMDB movie budget & revenue.
- */
-export function calculateBoxOfficeRoi(
-  budget: number | null | undefined,
-  revenue: number | null | undefined
-): BoxOfficeRoiResult {
-  if (!budget || !revenue || budget <= 0 || revenue <= 0) {
-    return {
-      multiplier: 0,
-      label: "Box Office Data N/A",
-      status: "unavailable",
-      badgeColor: "text-slate-400 bg-slate-800/60 border-slate-700/60",
-      profit: 0,
-    };
-  }
-
-  const multiplier = Number((revenue / budget).toFixed(1));
-  const profit = revenue - budget;
-
-  if (multiplier >= 3.0) {
-    return {
-      multiplier,
-      label: `${multiplier}x ROI • Blockbuster Hit`,
-      status: "blockbuster",
-      badgeColor: "text-amber-400 bg-amber-950/70 border-amber-500/40",
-      profit,
-    };
-  }
-
-  if (multiplier >= 1.5) {
-    return {
-      multiplier,
-      label: `${multiplier}x ROI • Strong Profit`,
-      status: "profitable",
-      badgeColor: "text-cyan-400 bg-cyan-950/70 border-cyan-500/40",
-      profit,
-    };
-  }
-
-  if (multiplier >= 1.0) {
-    return {
-      multiplier,
-      label: `${multiplier}x ROI • Broke Even`,
-      status: "breakeven",
-      badgeColor: "text-emerald-400 bg-emerald-950/70 border-emerald-500/40",
-      profit,
-    };
-  }
-
-  return {
-    multiplier,
-    label: `${multiplier}x ROI • Below Budget`,
-    status: "deficit",
-    badgeColor: "text-rose-400 bg-rose-950/70 border-rose-500/40",
-    profit,
-  };
-}
-
 export interface WatchlistStatsResult {
   totalCount: number;
   movieCount: number;
@@ -83,7 +16,7 @@ export function calculateWatchlistStats(
     media_type: string;
     vote_average?: number;
     status?: string;
-  }>
+  }>,
 ): WatchlistStatsResult {
   if (!items || items.length === 0) {
     return {

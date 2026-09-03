@@ -1,21 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Search, Loader2, ArrowRight } from "lucide-react";
-import { useUiStore } from "@/store/use-ui-store";
-import { useMultiSearch } from "@/features/search/hooks/use-search";
-import { useDebounce } from "@/hooks/use-debounce";
-import { getPosterUrl, getProfileUrl } from "@/lib/tmdb";
-import { formatYear } from "@/lib/utils";
-import { RatingBadge } from "@/components/ui/rating-badge";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { RatingBadge } from "@/components/ui/rating-badge";
+import { useMultiSearch } from "@/features/search/hooks/use-search";
+import { useDebounce } from "@/hooks/use-debounce";
+import { getPosterUrl, getProfileUrl } from "@/lib/tmdb";
+import { formatYear } from "@/lib/utils";
+import { useUiStore } from "@/store/use-ui-store";
+import { ArrowRight, Loader2, Search } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export function SearchModal() {
   const router = useRouter();
@@ -57,8 +57,15 @@ export function SearchModal() {
       <DialogContent className="sm:max-w-xl bg-[#07090E] border border-white/10 p-0 overflow-hidden shadow-none rounded-lg">
         <DialogHeader className="p-4 border-b border-white/10">
           <DialogTitle className="sr-only">Quick Search</DialogTitle>
-          <form onSubmit={handleFullSearch} className="relative flex items-center">
-            <Search className="h-5 w-5 text-slate-500 mr-3 shrink-0" />
+          <form
+            onSubmit={handleFullSearch}
+            className="relative flex items-center"
+          >
+            {isSearching ? (
+              <Loader2 className="h-5 w-5 animate-spin text-cyan-400 mr-3 shrink-0" />
+            ) : (
+              <Search className="h-5 w-5 text-slate-500 mr-3 shrink-0" />
+            )}
             <input
               type="text"
               placeholder="Search movies, TV shows, actors..."
@@ -67,7 +74,6 @@ export function SearchModal() {
               className="w-full bg-transparent text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none font-normal"
               autoFocus
             />
-            {isSearching && <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />}
           </form>
         </DialogHeader>
 
@@ -91,15 +97,15 @@ export function SearchModal() {
                 "title" in item
                   ? item.title
                   : "name" in item
-                  ? item.name
-                  : "Untitled";
+                    ? item.name
+                    : "Untitled";
 
               const imagePath =
                 "poster_path" in item
                   ? item.poster_path
                   : "profile_path" in item
-                  ? item.profile_path
-                  : null;
+                    ? item.profile_path
+                    : null;
 
               const imageUrl = isPerson
                 ? getProfileUrl(imagePath, "w45")
@@ -109,14 +115,14 @@ export function SearchModal() {
                 "release_date" in item
                   ? item.release_date
                   : "first_air_date" in item
-                  ? item.first_air_date
-                  : null;
+                    ? item.first_air_date
+                    : null;
 
               const href = isMovie
                 ? `/movies/${item.id}`
                 : isTv
-                ? `/tv/${item.id}`
-                : `/people/${item.id}`;
+                  ? `/tv/${item.id}`
+                  : `/people/${item.id}`;
 
               return (
                 <button
@@ -145,7 +151,11 @@ export function SearchModal() {
                         <span className="capitalize font-semibold text-cyan-400">
                           {item.media_type}
                         </span>
-                        {releaseDate && <span className="tabular-nums">• {formatYear(releaseDate)}</span>}
+                        {releaseDate && (
+                          <span className="tabular-nums">
+                            • {formatYear(releaseDate)}
+                          </span>
+                        )}
                         {"known_for_department" in item && (
                           <span>• {item.known_for_department}</span>
                         )}
@@ -155,7 +165,10 @@ export function SearchModal() {
 
                   <div className="flex items-center gap-2 shrink-0 ml-2">
                     {"vote_average" in item && item.vote_average > 0 && (
-                      <RatingBadge rating={item.vote_average} showStar={false} />
+                      <RatingBadge
+                        rating={item.vote_average}
+                        showStar={false}
+                      />
                     )}
                     <ArrowRight className="h-3.5 w-3.5 text-slate-600 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" />
                   </div>
