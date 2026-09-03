@@ -1,8 +1,7 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { TPerson } from "../types/people.types";
 import { getProfileUrl } from "@/lib/tmdb";
+import Image from "next/image";
+import Link from "next/link";
+import { TPerson } from "../types/people.types";
 
 interface PersonCardProps {
   person: TPerson;
