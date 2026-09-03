@@ -77,9 +77,9 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/85 backdrop-blur-2xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
         {/* Left: Brand & Navigation */}
-        <div className="flex items-center gap-3 md:gap-4 lg:gap-8">
+        <div className="flex items-center gap-2 md:gap-3 lg:gap-6 min-w-0">
           {/* Brand Logo */}
           <Link
             href="/"
@@ -103,7 +103,7 @@ export function Navbar() {
                     href="/"
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "px-2.5 lg:px-3 text-[11px] lg:text-xs",
+                      "px-2 lg:px-2.5 text-[11px] lg:text-xs",
                       isHomeActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
                     )}
                   >
@@ -115,7 +115,7 @@ export function Navbar() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger
                     className={cn(
-                      "px-2.5 lg:px-3 text-[11px] lg:text-xs",
+                      "px-2 lg:px-2.5 text-[11px] lg:text-xs",
                       isMoviesActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
                     )}
                   >
@@ -168,7 +168,7 @@ export function Navbar() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger
                     className={cn(
-                      "px-2.5 lg:px-3 text-[11px] lg:text-xs",
+                      "px-2 lg:px-2.5 text-[11px] lg:text-xs",
                       isTvActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
                     )}
                   >
@@ -223,7 +223,7 @@ export function Navbar() {
                     href="/people"
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "px-2.5 lg:px-3 text-[11px] lg:text-xs",
+                      "px-2 lg:px-2.5 text-[11px] lg:text-xs",
                       isPeopleActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
                     )}
                   >
@@ -237,7 +237,7 @@ export function Navbar() {
                     href="/watchlist"
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "px-2.5 lg:px-3 text-[11px] lg:text-xs",
+                      "px-2 lg:px-2.5 text-[11px] lg:text-xs",
                       isWatchlistActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
                     )}
                   >
@@ -255,18 +255,18 @@ export function Navbar() {
         </div>
 
         {/* Right: Quick Search, Watchlist Icon & Mobile Drawer Trigger */}
-        <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Quick Search Trigger (Adaptive Tablet & Desktop) */}
           <button
             type="button"
             onClick={openSearch}
-            className="flex items-center justify-between gap-1.5 h-9 w-9 sm:w-36 md:w-40 lg:w-56 rounded-full border border-white/10 bg-[#07090E] px-2.5 sm:px-3 text-xs text-slate-400 hover:border-cyan-500/40 hover:text-slate-200 transition-all cursor-pointer shrink-0"
+            className="flex items-center justify-between gap-1.5 h-9 w-9 md:w-36 lg:w-52 xl:w-56 rounded-full border border-white/10 bg-[#07090E] px-2.5 md:px-3 text-xs text-slate-400 hover:border-cyan-500/40 hover:text-slate-200 transition-all cursor-pointer shrink-0"
             aria-label="Search catalog"
           >
             <div className="flex items-center gap-2 overflow-hidden">
               <Search className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-              <span className="hidden sm:inline text-[11px] font-normal truncate">
-                Search movies, TV...
+              <span className="hidden md:inline text-[11px] font-normal truncate">
+                Search catalog...
               </span>
             </div>
             <kbd className="pointer-events-none hidden lg:inline-flex h-5 select-none items-center gap-0.5 rounded-[4px] border border-white/10 bg-[#0E121B] px-1.5 font-mono text-[10px] font-medium text-slate-400">

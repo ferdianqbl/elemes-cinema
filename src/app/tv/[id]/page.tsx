@@ -78,7 +78,7 @@ export default function TvDetailPage({ params }: TvDetailPageProps) {
       </Link>
 
       {/* Main Details Section */}
-      <div className="relative rounded-lg overflow-hidden border border-white/10 bg-[#07090E] p-6 md:p-10">
+      <div className="relative rounded-lg overflow-hidden border border-white/10 bg-[#07090E] p-4 sm:p-6 md:p-10">
         <div className="absolute inset-0 -z-10 overflow-hidden opacity-20">
           <Image
             src={backdropUrl}
@@ -90,9 +90,9 @@ export default function TvDetailPage({ params }: TvDetailPageProps) {
           <div className="absolute inset-0 bg-black/80" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Poster */}
-          <div className="relative aspect-[2/3] w-full rounded-lg overflow-hidden border border-white/10 bg-black mx-auto max-w-sm">
+          <div className="relative aspect-[2/3] w-full rounded-lg overflow-hidden border border-white/10 bg-black mx-auto max-w-[240px] sm:max-w-sm">
             <Image
               src={posterUrl}
               alt={tv.name}

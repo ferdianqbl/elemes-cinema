@@ -86,11 +86,11 @@ export default function SearchPage() {
 
       {/* Filter Tabs */}
       {searchInput.trim().length >= 2 && (
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10 w-fit">
+        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10 w-fit">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
-            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 sm:px-3.5 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "all"
                 ? "bg-cyan-400 text-neutral-950 font-bold"
                 : "text-slate-400 hover:text-white"
@@ -101,7 +101,7 @@ export default function SearchPage() {
           <button
             type="button"
             onClick={() => setActiveTab("movie")}
-            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 sm:px-3.5 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "movie"
                 ? "bg-cyan-400 text-neutral-950 font-bold"
                 : "text-slate-400 hover:text-white"
@@ -112,7 +112,7 @@ export default function SearchPage() {
           <button
             type="button"
             onClick={() => setActiveTab("tv")}
-            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 sm:px-3.5 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "tv"
                 ? "bg-cyan-400 text-neutral-950 font-bold"
                 : "text-slate-400 hover:text-white"
@@ -123,7 +123,7 @@ export default function SearchPage() {
           <button
             type="button"
             onClick={() => setActiveTab("person")}
-            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 sm:px-3.5 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "person"
                 ? "bg-cyan-400 text-neutral-950 font-bold"
                 : "text-slate-400 hover:text-white"

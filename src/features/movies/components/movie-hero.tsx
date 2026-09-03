@@ -19,14 +19,14 @@ interface MovieHeroProps {
 export function MovieHero({ movie, isLoading }: MovieHeroProps) {
   if (isLoading || !movie) {
     return (
-      <div className="relative aspect-[16/9] md:aspect-[21/9] w-full animate-pulse rounded-lg bg-[#07090E] overflow-hidden border border-white/10" />
+      <div className="relative aspect-[4/3] xs:aspect-[16/11] sm:aspect-[16/8] md:aspect-[21/9] min-h-[380px] sm:min-h-0 w-full animate-pulse rounded-lg bg-[#07090E] overflow-hidden border border-white/10" />
     );
   }
 
   const backdropUrl = getBackdropUrl(movie.backdrop_path, "original");
 
   return (
-    <div className="relative aspect-[16/10] sm:aspect-[16/8] md:aspect-[21/9] w-full rounded-lg overflow-hidden border border-white/10 bg-black">
+    <div className="relative aspect-[4/3] xs:aspect-[16/11] sm:aspect-[16/8] md:aspect-[21/9] min-h-[380px] sm:min-h-0 w-full rounded-lg overflow-hidden border border-white/10 bg-black">
       {/* Backdrop Image */}
       <Image
         src={backdropUrl}
@@ -43,8 +43,8 @@ export function MovieHero({ movie, isLoading }: MovieHeroProps) {
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
 
       {/* Content Container */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-10 flex flex-col justify-end max-w-3xl space-y-3">
-        <div className="flex items-center gap-2.5">
+      <div className="absolute bottom-0 left-0 right-0 p-4 xs:p-6 sm:p-8 md:p-10 flex flex-col justify-end max-w-3xl space-y-2.5 sm:space-y-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
           <RatingBadge rating={movie.vote_average} count={movie.vote_count} />
           <span className="text-xs text-slate-300 font-medium tabular-nums">
             {formatYear(movie.release_date)}
@@ -54,7 +54,7 @@ export function MovieHero({ movie, isLoading }: MovieHeroProps) {
           </span>
         </div>
 
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-white leading-tight">
+        <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-white leading-tight">
           {movie.title}
         </h1>
 
@@ -63,9 +63,9 @@ export function MovieHero({ movie, isLoading }: MovieHeroProps) {
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3 pt-2">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 sm:pt-2">
           <Link href={`/movies/${movie.id}`}>
-            <Button variant="default" size="default" className="gap-2">
+            <Button variant="default" size="default" className="gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4">
               <Play className="h-4 w-4 fill-current" />
               <span>Watch Details</span>
             </Button>
@@ -86,7 +86,7 @@ export function MovieHero({ movie, isLoading }: MovieHeroProps) {
           />
 
           <Link href={`/movies/${movie.id}`}>
-            <Button variant="outline" size="default" className="gap-2">
+            <Button variant="outline" size="default" className="gap-2 text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4">
               <Info className="h-4 w-4" />
               <span>More Info</span>
             </Button>

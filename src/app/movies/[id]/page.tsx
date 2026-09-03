@@ -81,7 +81,7 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
       </Link>
 
       {/* Main Details Section */}
-      <div className="relative rounded-lg overflow-hidden border border-white/10 bg-[#07090E] p-6 md:p-10">
+      <div className="relative rounded-lg overflow-hidden border border-white/10 bg-[#07090E] p-4 sm:p-6 md:p-10">
         <AmbientGlow intensity="medium" color="cyan" className="-top-12 -bottom-12" />
 
         {/* Ambient Backdrop Blurred */}
@@ -96,9 +96,9 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
           <div className="absolute inset-0 bg-black/80" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Poster Column */}
-          <div className="relative aspect-[2/3] w-full rounded-lg overflow-hidden border border-white/10 bg-black mx-auto max-w-sm">
+          <div className="relative aspect-[2/3] w-full rounded-lg overflow-hidden border border-white/10 bg-black mx-auto max-w-[240px] sm:max-w-sm">
             <Image
               src={posterUrl}
               alt={movie.title}
@@ -174,7 +174,7 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
               {/* Commercial Box Office Performance Bar */}
               {movie.budget > 0 && movie.revenue > 0 && (
                 <div className="p-3.5 rounded-lg bg-[#0E121B] border border-white/10 space-y-2.5">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 text-xs">
                     <span className="font-semibold text-slate-300">
                       Box Office Commercial Performance
                     </span>
@@ -190,7 +190,7 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 text-center text-xs">
                     <div className="p-2 rounded-[4px] bg-black/60 border border-white/5">
                       <span className="text-[10px] text-slate-500 uppercase block">Budget</span>
                       <span className="font-semibold text-slate-200 tabular-nums">

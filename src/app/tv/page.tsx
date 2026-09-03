@@ -37,7 +37,7 @@ export default function TvPage() {
         </div>
 
         {/* Tab Filters (Pill Switcher) */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10 w-fit">
+        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10 w-fit">
           {TV_CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.id;
             return (
@@ -45,7 +45,7 @@ export default function TvPage() {
                 key={cat.id}
                 type="button"
                 onClick={() => handleCategoryChange(cat.id as TvCategory)}
-                className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-3 sm:px-3.5 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
                   isActive
                     ? "bg-cyan-400 text-neutral-950 font-bold"
                     : "text-slate-400 hover:text-white"

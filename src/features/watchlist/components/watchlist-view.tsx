@@ -62,63 +62,63 @@ export function WatchlistView() {
   return (
     <div className="space-y-8">
       {/* Cinephile Analytics Dashboard Bar (100% derived from TMDB item data & user status) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-lg bg-[#07090E] border border-white/10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-lg bg-[#07090E] border border-white/10">
         {/* Total Items Saved */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-cyan-950/70 border border-cyan-500/30 text-cyan-400 shrink-0">
-            <Sparkles className="h-4 w-4" />
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[4px] bg-cyan-950/70 border border-cyan-500/30 text-cyan-400 shrink-0">
+            <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 truncate">
               Total Saved
             </p>
-            <p className="text-sm sm:text-base font-semibold text-white tabular-nums">
+            <p className="text-xs sm:text-base font-semibold text-white tabular-nums">
               {stats.totalCount} Titles
             </p>
           </div>
         </div>
 
         {/* Community Avg Rating */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-amber-950/70 border border-amber-500/30 text-amber-400 shrink-0">
-            <Star className="h-4 w-4" />
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[4px] bg-amber-950/70 border border-amber-500/30 text-amber-400 shrink-0">
+            <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 truncate">
               Average Score
             </p>
-            <p className="text-sm sm:text-base font-semibold text-white tabular-nums">
+            <p className="text-xs sm:text-base font-semibold text-white tabular-nums">
               {stats.averageRating > 0 ? `${stats.averageRating} / 10` : "N/A"}
             </p>
           </div>
         </div>
 
         {/* Top Score Title */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-sky-950/70 border border-sky-500/30 text-sky-400 shrink-0">
-            <Trophy className="h-4 w-4" />
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[4px] bg-sky-950/70 border border-sky-500/30 text-sky-400 shrink-0">
+            <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 truncate">
               Highest Rating
             </p>
-            <p className="text-sm sm:text-base font-semibold text-white tabular-nums">
+            <p className="text-xs sm:text-base font-semibold text-white tabular-nums">
               {stats.highestRating > 0 ? `${stats.highestRating} / 10` : "N/A"}
             </p>
           </div>
         </div>
 
         {/* Watched Progress */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 shrink-0">
-            <CheckCircle2 className="h-4 w-4" />
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[4px] bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 shrink-0">
+            <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 truncate">
               Watch Progress
             </p>
-            <p className="text-sm sm:text-base font-semibold text-white tabular-nums">
-              {stats.watchedCount} of {stats.totalCount} ({stats.completionRate}%)
+            <p className="text-xs sm:text-base font-semibold text-white tabular-nums truncate">
+              {stats.watchedCount}/{stats.totalCount} ({stats.completionRate}%)
             </p>
           </div>
         </div>
@@ -128,11 +128,11 @@ export function WatchlistView() {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-white/10">
         {/* Media Type Tabs */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10">
+          <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10">
             <button
               type="button"
               onClick={() => setFilter("all")}
-              className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
                 filter === "all"
                   ? "bg-cyan-400 text-neutral-950 font-bold"
                   : "text-slate-400 hover:text-white"
@@ -143,7 +143,7 @@ export function WatchlistView() {
             <button
               type="button"
               onClick={() => setFilter("movie")}
-              className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
                 filter === "movie"
                   ? "bg-cyan-400 text-neutral-950 font-bold"
                   : "text-slate-400 hover:text-white"
@@ -154,7 +154,7 @@ export function WatchlistView() {
             <button
               type="button"
               onClick={() => setFilter("tv")}
-              className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
                 filter === "tv"
                   ? "bg-cyan-400 text-neutral-950 font-bold"
                   : "text-slate-400 hover:text-white"
@@ -165,11 +165,11 @@ export function WatchlistView() {
           </div>
 
           {/* Status Filter Tabs */}
-          <div className="flex items-center gap-1 p-1 rounded-full bg-[#07090E] border border-white/10 text-xs">
+          <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10 text-xs">
             <button
               type="button"
               onClick={() => setStatusFilter("all")}
-              className={`px-2.5 py-1 rounded-full transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-md sm:rounded-full transition-colors cursor-pointer ${
                 statusFilter === "all" ? "bg-white/10 text-white font-semibold" : "text-slate-400"
               }`}
             >
@@ -178,7 +178,7 @@ export function WatchlistView() {
             <button
               type="button"
               onClick={() => setStatusFilter("want_to_watch")}
-              className={`px-2.5 py-1 rounded-full transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-md sm:rounded-full transition-colors cursor-pointer ${
                 statusFilter === "want_to_watch" ? "bg-white/10 text-cyan-400 font-semibold" : "text-slate-400"
               }`}
             >
@@ -187,7 +187,7 @@ export function WatchlistView() {
             <button
               type="button"
               onClick={() => setStatusFilter("watched")}
-              className={`px-2.5 py-1 rounded-full transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-md sm:rounded-full transition-colors cursor-pointer ${
                 statusFilter === "watched" ? "bg-white/10 text-emerald-400 font-semibold" : "text-slate-400"
               }`}
             >

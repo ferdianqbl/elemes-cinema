@@ -73,10 +73,10 @@ export default function PersonDetailPage({ params }: PersonDetailPageProps) {
       </Link>
 
       {/* Main Profile Info */}
-      <div className="relative rounded-lg overflow-hidden border border-white/10 bg-[#07090E] p-6 md:p-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div className="relative rounded-lg overflow-hidden border border-white/10 bg-[#07090E] p-4 sm:p-6 md:p-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Portrait */}
-          <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden border border-white/10 bg-black mx-auto max-w-sm">
+          <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden border border-white/10 bg-black mx-auto max-w-[240px] sm:max-w-sm">
             <Image
               src={profileUrl}
               alt={person.name}
