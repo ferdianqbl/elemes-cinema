@@ -23,12 +23,87 @@ import { getPosterUrl } from "@/lib/tmdb";
 import { RatingBadge } from "@/components/ui/rating-badge";
 import { formatYear } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export function WatchlistSkeleton() {
+  return (
+    <div className="space-y-8" data-slot="watchlist-skeleton">
+      {/* 1. Analytics Dashboard Bar Skeleton */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-lg bg-[#07090E] border border-white/10">
+        {Array.from({ length: 4 }).map((_, idx) => (
+          <div key={idx} className="flex items-center gap-2.5 sm:gap-3">
+            <Skeleton className="h-8 w-8 sm:h-9 sm:w-9 rounded-[4px] shrink-0" />
+            <div className="space-y-1.5 flex-1 min-w-0">
+              <Skeleton className="h-3 w-16" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 2. Controls & Filter Bar Skeleton */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-white/10">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Media Filter Tabs Skeleton */}
+          <div className="flex items-center gap-1 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10">
+            <Skeleton className="h-7 w-16 rounded-md sm:rounded-full" />
+            <Skeleton className="h-7 w-20 rounded-md sm:rounded-full" />
+            <Skeleton className="h-7 w-16 rounded-md sm:rounded-full" />
+          </div>
+
+          {/* Status Filter Tabs Skeleton */}
+          <div className="flex items-center gap-1 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10">
+            <Skeleton className="h-7 w-24 rounded-md sm:rounded-full" />
+            <Skeleton className="h-7 w-20 rounded-md sm:rounded-full" />
+            <Skeleton className="h-7 w-20 rounded-md sm:rounded-full" />
+          </div>
+        </div>
+
+        {/* View Switcher Toggle Skeleton */}
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-16 rounded-lg" />
+        </div>
+      </div>
+
+      {/* 3. Cards Grid Skeleton */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {Array.from({ length: 10 }).map((_, idx) => (
+          <div
+            key={idx}
+            className="flex flex-col rounded-lg overflow-hidden bg-[#07090E] border border-white/10 space-y-3"
+          >
+            <Skeleton className="aspect-[2/3] w-full rounded-none" />
+            <div className="p-3 space-y-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-1/2" />
+              <Skeleton className="h-7 w-full rounded-[4px] mt-2" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function WatchlistView() {
   const { items, removeItem, clearWatchlist, toggleWatchedStatus } = useWatchlistStore();
   const [filter, setFilter] = useState<"all" | "movie" | "tv">("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "want_to_watch" | "watched">("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [hasHydrated, setHasHydrated] = React.useState(false);
+
+  React.useEffect(() => {
+    if (useWatchlistStore.persist?.hasHydrated?.()) {
+      setHasHydrated(true);
+    } else if (useWatchlistStore.persist?.onFinishHydration) {
+      const unsub = useWatchlistStore.persist.onFinishHydration(() => {
+        setHasHydrated(true);
+      });
+      return () => unsub?.();
+    } else {
+      setHasHydrated(true);
+    }
+  }, []);
 
   const stats = calculateWatchlistStats(items);
 
@@ -38,6 +113,10 @@ export function WatchlistView() {
     const matchesStatus = statusFilter === "all" || currentStatus === statusFilter;
     return matchesMedia && matchesStatus;
   });
+
+  if (!hasHydrated) {
+    return <WatchlistSkeleton />;
+  }
 
   if (items.length === 0) {
     return (
