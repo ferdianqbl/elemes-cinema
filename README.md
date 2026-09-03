@@ -1,6 +1,6 @@
 # 🎬 Elemes Cinema — Movie & TV Show Catalog Web App
 
-A modern, high-performance cinema streaming and media discovery web application built for the **Frontend Developer Test (Middle Level)** at **Elemes**. Powered by **The Movie Database (TMDB) API**, **Next.js 16 (Turbopack)**, **React 19**, **TanStack React Query v5**, **Zustand**, and the custom **Elemes Cinema Design System (ECDS) — "Midnight Cyan"**.
+A modern, high-performance cinema streaming and media discovery web application built for the **Frontend Developer Test (Middle Level)** at **Elemes**. Powered by **The Movie Database (TMDB) API**, **Next.js 16 (Turbopack)**, **React 19**, **TanStack React Query v5**, **Zustand**, **Motion**, and the custom **Elemes Cinema Design System (ECDS) — "Midnight Cyan"**.
 
 ---
 
@@ -10,11 +10,11 @@ Complete technical specifications, API guides, and validation matrices are avail
 
 | Document | Description | Link |
 |---|---|---|
-| **Product Requirements Document** | Complete feature list, user personas, TMDB endpoints matrix, and non-functional requirements. | [📄 `docs/PRD.md`](./docs/PRD.md) |
-| **System Architecture & Blueprint** | Technical stack breakdown, feature-driven folder structure, data flow, and naming standards. | [🏛️ `docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) |
-| **TMDB API Integration Guide** | Comprehensive documentation for all 12+ integrated endpoints, query parameters, types, and schemas. | [📡 `docs/API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md) |
-| **Elemes Cinema Design System (ECDS)** | Canonical "Midnight Cyan" cinema dark-mode tokens, typography, radii rules, and components. | [🎨 `docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md) |
-| **Feature Validations & Testing Matrix** | Step-by-step test matrix, automated test execution, accessibility audit, and submission checklist. | [🧪 `docs/FEATURE_VALIDATIONS.md`](./docs/FEATURE_VALIDATIONS.md) |
+| **Product Requirements Document** | Complete feature list, user personas, TMDB endpoints matrix, Watchlist ADR, and non-functional requirements. | [📄 `docs/PRD.md`](./docs/PRD.md) |
+| **System Architecture & Blueprint** | Technical stack breakdown, feature-driven folder structure, URL query sync, mobile dock architecture, and data flow. | [🏛️ `docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) |
+| **TMDB API Integration Guide** | Comprehensive documentation for all 15 integrated endpoints, query parameters, types, schemas, and OAuth vs LocalStorage ADR. | [📡 `docs/API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md) |
+| **Elemes Cinema Design System (ECDS)** | Canonical "Midnight Cyan" cinema dark-mode tokens, motion springs, mobile dock tokens, and radii rules. | [🎨 `docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md) |
+| **Feature Validations & Testing Matrix** | Step-by-step test matrix, 45 unit tests, 26 Playwright E2E tests, accessibility audit, and submission checklist. | [🧪 `docs/FEATURE_VALIDATIONS.md`](./docs/FEATURE_VALIDATIONS.md) |
 
 ---
 
@@ -26,13 +26,13 @@ Complete technical specifications, API guides, and validation matrices are avail
 │                 (App Router with Turbopack)                 │
 └──────────────────────────────┬──────────────────────────────┘
                                │
-       ┌───────────────────────┼───────────────────────┐
-       ▼                       ▼                       ▼
-┌──────────────┐       ┌──────────────┐        ┌──────────────┐
-│  Tailwind v4 │       │  TanStack Q5 │        │  Zustand v5  │
-│  + shadcn/ui │       │ (Async SWR & │        │ (Watchlist & │
-│ (ECDS Theme) │       │ 5m StaleTime)│        │   UI State)  │
-└──────────────┘       └───────┬──────┘        └──────────────┘
+        ┌──────────────────────┼───────────────────────┐
+        ▼                      ▼                       ▼
+ ┌──────────────┐      ┌──────────────┐        ┌──────────────┐
+ │  Tailwind v4 │      │  TanStack Q5 │        │  Zustand v5  │
+ │  + shadcn/ui │      │ (Async SWR & │        │ (Watchlist & │
+ │  + Motion    │      │ 5m StaleTime)│        │   UI State)  │
+ └──────────────┘      └───────┬──────┘        └──────────────┘
                                │
                                ▼
                        ┌──────────────┐
@@ -51,18 +51,19 @@ Complete technical specifications, API guides, and validation matrices are avail
 * **UI Engine:** [React 19.2.0](https://react.dev/) utilizing modern hydration and concurrent transitions.
 * **Language:** [TypeScript 5](https://www.typescriptlang.org/) in strict mode with exhaustive TMDB entity models.
 * **Styling & Components:** [Tailwind CSS v4](https://tailwindcss.com/) + [shadcn/ui (Base UI)](https://ui.shadcn.com/) configured with the ECDS Midnight Cyan design system.
+* **Animations:** [Motion (`motion/react`)](https://motion.dev/) powering fluid layout spring indicators (`layoutId`) and smooth grid cross-fades.
 * **Server State & Caching:** [TanStack React Query v5](https://tanstack.com/query/latest) with a 5-minute stale-time caching strategy and deterministic query key factories.
 * **HTTP Client:** [Axios](https://axios-http.com/) configured with request/response interceptors for TMDB v4 Bearer Tokens and v3 API Key fallbacks.
 * **Client State & Persistence:** [Zustand v5](https://zustand-demo.pmnd.rs/) with `persist` middleware for zero-friction `localStorage` synchronization.
-* **Unit Testing:** [Vitest 3](https://vitest.dev/) + [React Testing Library](https://testing-library.com/) + [jsdom](https://github.com/jsdom/jsdom).
-* **End-to-End Testing:** [Playwright](https://playwright.dev/) across Desktop and Mobile viewports.
+* **Unit Testing:** [Vitest 3](https://vitest.dev/) + [React Testing Library](https://testing-library.com/) + [jsdom](https://github.com/jsdom/jsdom) (45 tests passing).
+* **End-to-End Testing:** [Playwright](https://playwright.dev/) across Desktop and Mobile Chrome viewports (26 tests passing).
 * **Iconography:** [Lucide React](https://lucide.dev/).
 
 ---
 
 ## 🎯 Integrated Features & TMDB Endpoints
 
-The project integrates **12 TMDB API endpoints**, exceeding the 4-endpoint minimum required by the assessment:
+The project integrates **15 TMDB API endpoints**, exceeding the 4-endpoint minimum required by the assessment:
 
 ### 1. Movies Domain (`/movies` & `/movies/[id]`)
 - `GET /movie/popular` — Trending & popular movies
@@ -73,6 +74,7 @@ The project integrates **12 TMDB API endpoints**, exceeding the 4-endpoint minim
 - `GET /movie/{id}/credits` — Top 10 cast filmography and characters
 - `GET /movie/{id}/videos` — Official YouTube video trailers and teasers
 - `GET /movie/{id}/similar` — Recommended similar movies
+- **URL Query Tabs & Motion:** Category tabs sync with `?category=` with spring-animated active pills and touch-scrollable shelves on mobile.
 
 ### 2. TV Series Domain (`/tv` & `/tv/[id]`)
 - `GET /tv/popular` — Popular television shows
@@ -89,10 +91,19 @@ The project integrates **12 TMDB API endpoints**, exceeding the 4-endpoint minim
 - `GET /person/{id}/combined_credits` — Comprehensive cross-media filmography
 
 ### 4. Search Engine (`/search` & Quick `⌘K` Modal)
-- `GET /search/multi` — Unified live search querying movies, TV series, and cast simultaneously with category filter tabs (`All`, `Movies`, `TV`, `People`).
+- `GET /search/multi` — Unified live search querying movies, TV series, and cast simultaneously with category filter tabs (`All`, `Movies`, `TV`, `People`) and a 350ms debounce.
 
-### 5. LocalStorage Watchlist (`/watchlist`)
-- Reactive bookmarking stored in `localStorage` via Zustand with live navbar badge counter and media-type filtering (`All`, `Movies`, `TV`).
+### 5. LocalStorage Watchlist with Cinephile Analytics (`/watchlist`)
+- Reactive bookmarking stored in `localStorage` via Zustand with live navbar & mobile dock badge counters.
+- `WatchlistSkeleton` loader displayed while Zustand rehydrates, eliminating jarring empty flashes.
+- Built-in **Cinephile Analytics Dashboard** calculating Total Watchtime (Hours & Minutes), Watched Completion %, and Average TMDB Rating.
+- Status toggle ("Want to Watch" vs "Watched") and Dual View Modes (Poster Grid vs Filmstrip List).
+
+### 6. Native Mobile App Experience (`<MobileTabBar />`)
+- Fixed bottom dock with frosted-glass backdrop blur (`md:hidden`).
+- 5 thumb-reachable tabs (Home, Movies, TV, Search modal, Watchlist).
+- Safe-area inset support (`pb-[max(env(safe-area-inset-bottom),8px)]`) for modern bezel-less smartphones.
+- Touch-scrollable category pills with hidden scrollbars (`.no-scrollbar`).
 
 👉 Read full API schema in [📡 `docs/API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md).
 
@@ -100,14 +111,14 @@ The project integrates **12 TMDB API endpoints**, exceeding the 4-endpoint minim
 
 ## 🎨 Design System: "Midnight Cyan" (ECDS)
 
-The interface follows the **Elemes Cinema Design System (ECDS)** inspired by the HBO Max cinema-dark architecture:
+The interface follows the **Elemes Cinema Design System (ECDS)** inspired by the HBO Max and Apple TV+ cinema-dark architecture:
 
 * **Obsidian Canvas (`#000000`):** Pure black base letting poster artwork illuminate like theater screens.
 * **Abyss Surface (`#07090E`):** Elevated cards, dropdown menus, and search dialog chrome.
 * **Electric Cyan (`#00E5FF`):** Signature primary CTA button fill, active tab indicators, focus rings, and switches.
 * **Marquee Gold (`#F59E0B`):** Star ratings ($\ge 7.0$) and critically acclaimed score badges.
 * **Strict Radii Hierarchy:** $8\text{px}$ for buttons and media cards, $100\text{px}$ (`rounded-full`) for pill category toggles, $4\text{px}$ for micro tags. Zero mixed arbitrary radii.
-* **Contrast-Driven Elevation:** Zero artificial drop shadows — depth is established strictly through high-contrast surface polarity and hairline borders (`border-white/10`).
+* **Fluid Spring Physics:** State changes and active pill transfers animated using `motion/react`.
 
 👉 Read full design tokens in [🎨 `docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md).
 
@@ -123,47 +134,49 @@ workspace/
 │   ├── API_DOCUMENTATION.md               # TMDB API Integration Reference
 │   ├── DESIGN_SYSTEM.md                   # Elemes Cinema Design System Specification
 │   └── FEATURE_VALIDATIONS.md             # Quality Assurance & Test Guide
-├── e2e/                                   # Playwright End-to-End Test Suite
-│   ├── home.spec.ts                       # Home & discovery navigation tests
-│   ├── movies.spec.ts                     # Movies catalog & detail tests
-│   ├── tv.spec.ts                         # TV catalog & seasons guide tests
+├── e2e/                                   # Playwright End-to-End Test Suite (26 tests)
+│   ├── home.spec.ts                       # Home, discovery shelves, & mobile bottom nav tests
+│   ├── movies.spec.ts                     # Movies catalog, URL query tabs, & detail tests
+│   ├── tv.spec.ts                         # TV catalog, URL query tabs, & seasons guide tests
 │   ├── search.spec.ts                     # Multi-search & ⌘K modal tests
 │   └── watchlist.spec.ts                  # LocalStorage watchlist persistence tests
 ├── public/                                # Static assets & placeholder images
 ├── src/
 │   ├── app/                               # Next.js 16 App Router Route Tree
-│   │   ├── layout.tsx                     # Global Root Layout (QueryProvider, Tooltips, Nav)
-│   │   ├── globals.css                    # Tailwind v4 theme variables & base styles
+│   │   ├── layout.tsx                     # Global Root Layout (QueryProvider, Tooltips, Nav, MobileTabBar)
+│   │   ├── globals.css                    # Tailwind v4 theme variables, .no-scrollbar & base styles
 │   │   ├── page.tsx                       # Home page (Hero banner, curated shelves)
 │   │   ├── movies/
-│   │   │   ├── page.tsx                   # Movies Catalog (Category tabs & pagination)
-│   │   │   └── [id]/page.tsx              # Movie Details (trailers, cast, similar)
+│   │   │   ├── page.tsx                   # Movies Catalog (URL query tabs & spring pagination)
+│   │   │   └── [id]/page.tsx              # Movie Details (cinematic backdrop, floating poster, facts grid)
 │   │   ├── tv/
-│   │   │   ├── page.tsx                   # TV Shows Catalog (Category tabs & pagination)
-│   │   │   └── [id]/page.tsx              # TV Show Details (seasons, episodes, cast)
+│   │   │   ├── page.tsx                   # TV Shows Catalog (URL query tabs & spring pagination)
+│   │   │   └── [id]/page.tsx              # TV Show Details (seasons, episodes, cast, studios)
 │   │   ├── people/
 │   │   │   ├── page.tsx                   # Popular celebrities gallery
-│   │   │   └── [id]/page.tsx              # Actor profile & filmography
+│   │   │   └── [id]/page.tsx              # Actor profile, biography, & filmography
 │   │   ├── search/
 │   │   │   └── page.tsx                   # Dedicated multi-search engine
 │   │   ├── watchlist/
-│   │   │   └── page.tsx                   # Persistent Saved Watchlist view
-│   │   ├── loading.tsx                    # Route loading skeleton spinner
+│   │   │   ├── page.tsx                   # Persistent Saved Watchlist with Cinephile Analytics
+│   │   │   └── loading.tsx                # Streaming route skeleton loader
+│   │   ├── loading.tsx                    # Route loading skeleton
 │   │   ├── error.tsx                      # Global error boundary with retry
 │   │   └── not-found.tsx                  # Custom 404 page
 │   │
 │   ├── components/                        # Shared UI Components
-│   │   ├── ui/                            # shadcn/ui primitives (button, badge, dialog, tabs)
-│   │   └── layout/                        # Navbar, Footer, SectionHeader
+│   │   ├── ui/                            # shadcn/ui primitives (button, badge, dialog, drawer, tabs)
+│   │   └── layout/                        # Navbar, MobileTabBar, Footer, SectionHeader
 │   │
 │   ├── features/                          # Feature Domain Modules
 │   │   ├── movies/                        # Components, Hooks, Services, Types
 │   │   ├── tv/                            # Components, Hooks, Services, Types
 │   │   ├── people/                        # Components, Hooks, Services, Types
 │   │   ├── search/                        # Quick search modal, Hooks, Services, Types
-│   │   └── watchlist/                     # Watchlist buttons, View, Store
+│   │   └── watchlist/                     # Watchlist buttons, View, Store, Skeleton
 │   │
 │   ├── lib/                               # Core Utilities
+│   │   ├── analytics.ts                   # Cinephile analytics math (watch-time, ratings)
 │   │   ├── axios.ts                       # Axios client with TMDB auth interceptors
 │   │   ├── tmdb.ts                        # TMDB image sizing & video URL builders
 │   │   ├── constants.ts                   # Navigation links, genres, category maps
@@ -235,7 +248,7 @@ For detailed test procedures, responsive audits, accessibility verification, and
 
 ### 1. Unit & Component Integration Tests (Vitest)
 ```bash
-# Run unit & integration tests (34 tests passing)
+# Run unit & integration tests (45 tests passing)
 npm run test
 
 # Run tests in watch mode
@@ -247,7 +260,7 @@ npm run test:coverage
 
 ### 2. End-to-End Tests (Playwright)
 ```bash
-# Run all E2E tests headless
+# Run all 26 E2E tests headless across Desktop & Mobile Chrome
 npm run test:e2e
 
 # Run E2E tests with interactive UI mode
@@ -256,7 +269,7 @@ npm run test:e2e:ui
 
 ### 3. Production Build Validation
 ```bash
-# Compile optimized production build with Turbopack (0 errors)
+# Compile optimized production build with Turbopack (0 errors, ~1.7s)
 npm run build
 ```
 

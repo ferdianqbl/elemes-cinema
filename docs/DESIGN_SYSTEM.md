@@ -3,7 +3,7 @@
 > **Design Metaphor:** *Cinema theater at midnight. Deep obsidian canvas, glowing full-bleed film artwork, and electric cyan neon accents powering every interaction.*
 
 **Theme:** Dark Mode First (Midnight Cinema)  
-**Version:** 1.0.0  
+**Version:** 1.2.0  
 **Status:** Canonical Design Standard  
 **Document Path:** `workspace/docs/DESIGN_SYSTEM.md`  
 
@@ -11,13 +11,14 @@
 
 ## 1. Design Philosophy & Core Principles
 
-Inspired by the **HBO Max cinema-dark architecture**, the **Elemes Cinema Design System (ECDS)** is engineered specifically for film and television catalog discovery.
+Inspired by the **HBO Max and Apple TV+ cinema-dark architecture**, the **Elemes Cinema Design System (ECDS)** is engineered specifically for film and television catalog discovery.
 
 1. **Artwork is the Hero:** The page background is pure black (`#000000`), allowing movie posters and backdrop stills to glow with maximum visual saturation without UI clutter.
-2. **Single Electric Accent (Electric Cyan):** Rather than scattering multiple competing colors, a single **Electric Cyan (`#00E5FF` / `#06B6D4`)** accent powers all primary buttons, active tabs, focus rings, and interactive focal points.
-3. **Contrast-Driven Elevation (Zero Drop Shadows):** Depth is created exclusively through surface contrast shifts (Obsidian `#000000` $\to$ Abyss `#07090E` $\to$ Snow `#FFFFFF` / Cyan `#00E5FF`) and hairline borders (`border-white/10`), eliminating muddy artificial drop shadows.
-4. **Cinema Marquee Typography:** Headlines use lighter, elegant weights ($300 - 400$) while micro-labels, metadata tags, and category eyebrows feature positive marquee letter-spacing (`+0.08em` to `+0.1em`).
-5. **Strict Geometric Radii Discipline:** Exact three-tier radius scale ($8\text{px}$ cards/buttons, $100\text{px}$ pills, $4\text{px}$ tags) with zero intermediate radius variations.
+2. **Single Electric Accent (Electric Cyan):** Rather than scattering multiple competing colors, a single **Electric Cyan (`#00E5FF` / `#22D3EE`)** accent powers all primary buttons, active tabs, focus rings, and interactive focal points.
+3. **Contrast-Driven Elevation:** Depth is created exclusively through surface contrast shifts (Obsidian `#000000` $\to$ Abyss `#07090E` $\to$ Snow `#FFFFFF` / Cyan `#00E5FF`) and hairline borders (`border-white/10`).
+4. **Fluid Spring Motion:** State changes, active category pill transfers, and mobile dock indicators rely on physical spring animations (`motion.span layoutId`) rather than abrupt cuts or static CSS transitions.
+5. **Native Mobile Ergonomics:** On handheld devices, thumb-reach navigation is prioritized with a frosted-glass bottom dock (`<MobileTabBar />`), safe-area inset protection, and tactile tap feedback (`active:scale-90`).
+6. **Strict Geometric Radii Discipline:** Exact three-tier radius scale ($8\text{px}$ cards/buttons, $100\text{px}$ pills, $4\text{px}$ tags) with zero intermediate radius variations.
 
 ---
 
@@ -95,79 +96,64 @@ No arbitrary intermediate border-radius values are permitted. Only three specifi
 
 ---
 
-## 5. Component Library & Implementation Specifications
+## 5. Animation & Motion Standards (`motion/react`)
 
-### 5.1 Primary Electric Cyan CTA Button
+### 5.1 Active Category Spring Indicator
+Category tabs utilize hardware-accelerated spring animations for fluid transitions:
 ```tsx
-// Electric Cyan CTA
-<Button className="h-10 px-5 rounded-lg bg-cyan-400 text-neutral-950 font-bold hover:bg-cyan-300 active:scale-[0.98] transition-all">
-  <Play className="h-4 w-4 fill-current mr-2" />
-  <span>Watch Details</span>
-</Button>
+<motion.span
+  layoutId="activeMovieTabIndicator"
+  className="absolute inset-0 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/30"
+  transition={{ type: "spring", stiffness: 450, damping: 35 }}
+/>
 ```
 
-### 5.2 Ghost Marquee Button
+### 5.2 Card Grid Cross-Fade Transitions
+When switching categories, the movie/TV grid smoothly fades and shifts:
 ```tsx
-// Ghost Outline Button
-<Button variant="outline" className="h-10 px-5 rounded-lg border border-white/20 bg-transparent text-white hover:border-cyan-400 hover:text-cyan-300 hover:bg-cyan-950/20 transition-all">
-  <span>More Information</span>
-</Button>
+<AnimatePresence mode="wait">
+  <motion.div
+    key={activeCategory}
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    transition={{ duration: 0.25, ease: "easeInOut" }}
+  >
+    <MovieGrid movies={movies} />
+  </motion.div>
+</AnimatePresence>
 ```
-
-### 5.3 Cinema Poster Card
-- **Surface:** `#07090E` (Abyss Surface) with `1px solid rgba(255, 255, 255, 0.08)` hairline border.
-- **Image:** $2:3$ Aspect ratio with `rounded-t-lg` overflow-hidden container.
-- **Hover State:** Smooth scale ($1.03\times$) on the poster image, border transitions to `border-cyan-500/50`, zero drop shadows.
-- **Badges:** RatingBadge top-left, circular WatchlistButton top-right.
-
-### 5.4 Marquee Rating Badge
-- **High Rating ($\ge 7.0$):** Gold accent (`bg-amber-950/80 text-amber-400 border border-amber-500/30`).
-- **Standard Rating ($< 7.0$):** Cyan/Glacier accent (`bg-cyan-950/80 text-cyan-400 border border-cyan-500/30`).
-- Star icon fill matches current text token.
-
-### 5.5 Category Navigation Pill Switcher
-- **Container:** `bg-[#07090E] border border-white/10 p-1 rounded-full`.
-- **Active Tab:** `bg-cyan-400 text-neutral-950 font-bold rounded-full`.
-- **Inactive Tab:** `text-slate-400 hover:text-white rounded-full`.
 
 ---
 
-## 6. Do's and Don'ts
+## 6. Native Mobile App Components
+
+### 6.1 Fixed Bottom Dock (`<MobileTabBar />`)
+- **Container:** `fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/92 backdrop-blur-2xl border-t border-white/10`.
+- **Safe Area Inset:** `pb-[max(env(safe-area-inset-bottom,0px),8px)]`.
+- **Tactile Feedback:** `active:scale-90 transition-transform`.
+- **Active Indicator:** Glowing cyan top-line indicator (`layoutId="mobileTabIndicator"`).
+- **Badge Counter:** Live cyan counter badge on the Watchlist tab.
+
+### 6.2 Mobile Horizontal Scroll Shelves
+- **Pill Container:** `flex items-center gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10 w-full overflow-x-auto no-scrollbar scroll-smooth flex-nowrap shrink-0`.
+- **Pills:** `shrink-0 whitespace-nowrap active:scale-95`.
+
+---
+
+## 7. Do's and Don'ts
 
 ### ✅ DO
 - Use `#000000` as the absolute base page canvas.
 - Use **Electric Cyan (`#00E5FF`)** as the single primary accent color across all interactive buttons and active states.
 - Maintain wide positive letter-spacing (`tracking-wider` / `+0.08em`) on all uppercase small labels and badges.
 - Keep card radius strictly at $8\text{px}$ and pills strictly at `rounded-full`.
-- Use hairline borders (`border-white/10` or `border-cyan-500/20`) to define separation without drop shadows.
+- Use hairline borders (`border-white/10` or `border-cyan-500/20`) to define separation without muddy artificial shadows.
+- Add `active:scale-90` / `active:scale-95` on touch interactions for a responsive native feel.
 
 ### ❌ DON'T
 - Never use heavy drop shadows (`shadow-2xl` with black blurs) — let contrast provide elevation.
 - Never mix arbitrary corner radii (e.g. $6\text{px}$, $14\text{px}$, $20\text{px}$).
-- Do not introduce multiple saturated rainbow accent colors (e.g., green, purple, orange buttons on the same view).
-- Do not use tight negative letter-spacing on small utility labels.
+- Do not introduce multiple saturated rainbow accent colors on the same screen.
+- Do not allow category switchers to wrap onto 2-3 vertical lines on mobile devices.
 - Do not use gray/washed-out canvas backgrounds (`#1f2937`) — stick to deep Obsidian `#000000`.
-
----
-
-## 7. Tailwind CSS v4 Theme Token Mapping
-
-```css
-@theme inline {
-  --color-obsidian: #000000;
-  --color-abyss: #07090e;
-  --color-abyss-elevated: #0e121b;
-  --color-electric-cyan: #00e5ff;
-  --color-glacier-beam: #38bdf8;
-  --color-snow: #ffffff;
-  --color-ash-mist: #94a3b8;
-  --color-iron-veil: #334155;
-  --color-marquee-gold: #f59e0b;
-  --color-cinema-crimson: #ef4444;
-
-  --radius-tags: 4px;
-  --radius-cards: 8px;
-  --radius-buttons: 8px;
-  --radius-pills: 9999px;
-}
-```

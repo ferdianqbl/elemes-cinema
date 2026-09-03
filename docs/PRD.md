@@ -5,7 +5,7 @@
 **API Source:** [The Movie Database (TMDB) API](https://developer.themoviedb.org/docs)  
 **Submission Contact:** `alifa@elemes.id`  
 **Status:** Complete / Shipped  
-**Version:** 1.0.0  
+**Version:** 1.2.0  
 
 ---
 
@@ -13,13 +13,14 @@
 
 The **Elemes Cinema Catalog** is a modern, responsive, and performance-oriented entertainment web application built to showcase movies, TV series, trailers, and cast profiles sourced from the TMDB API. 
 
-The application is inspired by modern streaming interfaces (Netflix / Coursera style) and provides users with a comprehensive catalog discovery engine, interactive trailer previews, live multi-search, and a persistent local watchlist.
+The application is inspired by modern streaming interfaces (Apple TV+ / Netflix / Letterboxd Pro) and provides users with a comprehensive catalog discovery engine, interactive trailer previews, live multi-search, a persistent local watchlist with cinephile analytics, and a native mobile application experience with a fixed bottom dock.
 
 ### Key Objectives
-- Exceed the minimum requirement of 4 TMDB API endpoints by integrating **10+ distinct endpoints**.
-- Deliver a cinema-grade visual experience with dark mode, smooth transitions, and intuitive micro-interactions.
-- Provide reliable client-side state persistence for user bookmarking and watchlists without requiring external authentication.
-- Implement accessible, semantic, and responsive layouts across all device form factors (mobile, tablet, desktop).
+- Exceed the minimum requirement of 4 TMDB API endpoints by integrating **15 distinct endpoints**.
+- Deliver a cinema-grade visual experience with pure black canvas (`#000000`), electric cyan highlights (`#00E5FF`), smooth spring layout animations (`motion`), and tactile touch micro-interactions.
+- Provide reliable client-side state persistence for user bookmarking and watchlists without requiring external authentication or 3-legged OAuth friction.
+- Deliver an authentic Native Mobile App experience with bottom dock navigation, safe-area inset support, and horizontal touch-scrollable category chips.
+- Maintain a 100% automated test pass rate across unit tests (**45 tests**) and end-to-end browser tests (**26 tests**).
 
 ---
 
@@ -30,77 +31,84 @@ The application is inspired by modern streaming interfaces (Netflix / Coursera s
 | **Casual Moviegoer** | Quick discovery of what's currently trending in theaters or streaming. | Engaging visual hero banners, simple category tabs, clear ratings. |
 | **TV Binge-Watcher** | Keeping track of ongoing series and upcoming season broadcast schedules. | Episode counts, season overviews, airing schedules. |
 | **Film Enthusiast** | Deep-diving into directors, cast members, official trailers, and budgets. | High-res trailers, full cast filmography, production metadata. |
-| **Planner / Curator** | Saving titles to watch over the weekend without losing data on page reload. | 1-click Watchlist with instant counter badge and browser persistence. |
+| **Planner / Curator** | Saving titles to watch over the weekend without losing data on page reload. | 1-click Watchlist with instant counter badge, watched status tracking, and browser persistence. |
+| **Mobile User** | Browsing the catalog comfortably on smartphones with one thumb. | Native bottom dock navigation, swipeable category chips, tactile touch feedback. |
 
 ---
 
 ## 3. Comprehensive Feature Scope & Requirements
 
 ### 3.1 Home & Discovery Engine (`/`)
-- **Featured Hero Banner:** Displays high-resolution backdrop art, Rotten/TMDB star score, release year, overview synopsis, direct trailer link, and 1-click Watchlist toggle.
+- **Featured Hero Banner:** High-resolution backdrop art, Rotten/TMDB star score, release year, overview synopsis, direct details link, and 1-click Watchlist toggle.
 - **Popular Movies Shelf:** Curated 10-item grid showing current international box office hits.
-- **Top Rated TV Shows Shelf:** Curated 10-item grid featuring critically acclaimed series.
-- **Trending Cast & Celebrities:** Profile cards of trending actors, directors, and artists with department and known-for badges.
+- **Top Rated TV Shows Shelf:** Curated widescreen cards featuring critically acclaimed series.
+- **Trending Cast & Celebrities:** Profile cards of trending actors, directors, and creators with department and known-for badges.
 - **Direct Navigation Links:** Quick "View All" action buttons to deep catalog sections.
 
 ### 3.2 Movies Catalog & Category Switcher (`/movies`)
-- **Category Filter Tabs:**
-  - `Popular` (`/movie/popular`)
-  - `Top Rated` (`/movie/top_rated`)
-  - `Now Playing` (`/movie/now_playing`)
-  - `Upcoming` (`/movie/upcoming`)
-- **Dynamic Pagination:** Server-side page navigation (Previous / Next / Page Indicator) with scroll-to-top behavior.
-- **Card Interactive Features:** Hover zoom, star ratings, release year, movie badges, and instant bookmarking.
+- **URL Query Parameter Synchronization:** Tabs sync with `?category=` (`popular`, `top_rated`, `now_playing`, `upcoming`), supporting browser back/forward and deep linking.
+- **Direct Navbar Activation:** Clicking specific categories in the desktop navbar dropdown or mobile drawer directly activates the corresponding tab.
+- **Fluid Spring Animation:** Powered by `motion/react`, the active tab pill glides seamlessly between categories using spring physics (`layoutId="activeMovieTabIndicator"`).
+- **Smooth Content Transitions:** Category grid changes cross-fade and translate smoothly via `<AnimatePresence>`.
+- **Mobile Touch-Scroll Shelf:** On mobile devices, category pills scroll horizontally with momentum (`overflow-x-auto no-scrollbar flex-nowrap`) to prevent awkward line wrapping.
+- **Dynamic Pagination:** Page navigation with Previous / Next / Page Indicator and automatic page resets on category change.
 
 ### 3.3 Movie Detail View (`/movies/[id]`)
-- **Ambient Blurred Backdrop Header:** Dynamic atmospheric gradient behind poster and metadata.
-- **Comprehensive Metadata:** Runtime formatted as `Xh Ym`, Budget & Revenue formatted in USD, Original Language, Release Date, Status, Tagline.
-- **Genre Badges:** Clickable or tag-style badges.
+- **Cinematic Backdrop Header:** Full-bleed cinematic backdrop banner with atmospheric vignette gradients seamlessly blending into the canvas.
+- **Elevated Floating Poster:** 3D elevated floating movie poster (`shadow-2xl shadow-black border-2 border-white/15`).
+- **Minimalist Movie Facts Grid:** 4 clean, authentic TMDB data tiles (Release Date, Original Language, Budget, Worldwide Revenue in USD).
+- **Interactive Actions:** Full-width "Add to Watchlist" toggle, "Watch Trailer" anchor jump, and Official Website link.
 - **Official YouTube Video Trailer:** Embedded responsive 16:9 iframe player for trailers and teasers.
 - **Top 10 Billed Cast:** Actor profile pictures, real names, and character roles.
 - **Similar Recommendations Grid:** Up to 5 related movies based on TMDB recommendation algorithms.
 
 ### 3.4 TV Shows Catalog & Season Guide (`/tv` & `/tv/[id]`)
-- **TV Category Switcher:**
-  - `Popular` (`/tv/popular`)
-  - `Top Rated` (`/tv/top_rated`)
-  - `On The Air` (`/tv/on_the_air`)
-  - `Airing Today` (`/tv/airing_today`)
+- **URL Query Parameter Synchronization:** Tabs sync with `?category=` (`popular`, `top_rated`, `on_the_air`, `airing_today`).
+- **Mobile Touch-Scroll Shelf & Spring Tabs:** Identical smooth spring pill animations and mobile touch scrollability.
 - **TV Series Detail Page:**
   - Total seasons and total episode counts.
-  - Creator and showrunner attribution.
+  - Production studios attribution.
   - Series broadcast status (e.g., Returning Series, Ended).
-  - Seasons breakdown gallery showing individual season posters and episode counts.
-  - Official trailers and recurring cast grid.
-  - Similar TV show recommendations.
+  - Seasons breakdown gallery with season posters, release dates, and episode counts.
+  - Official trailers, recurring cast grid, and similar TV recommendations.
 
-### 3.5 Global Multi-Search Engine (`/search`)
-- **Universal Search Bar:** Accessible from the top navigation bar and the dedicated `/search` page.
-- **Live Debounced Querying:** Instant fetching as the user types (minimum 2 characters).
-- **Result Filter Tabs:**
-  - `All Results`
-  - `Movies`
-  - `TV Series`
-  - `People / Cast`
+### 3.5 Global Multi-Search Engine (`/search` & Quick `⌘K` Modal)
+- **Universal Search Bar:** Accessible from the top navigation bar, dedicated `/search` page, and mobile bottom tab bar.
+- **Live Debounced Querying:** Instant fetching as the user types (minimum 2 characters, 350ms debounce).
+- **Result Filter Tabs:** `All Results`, `Movies`, `TV Series`, `People / Cast`.
 - **Zero-State Handling:** Contextual feedback when no matches are found with keyword suggestions.
 
-### 3.6 Interactive Watchlist System (`/watchlist`)
+### 3.6 Interactive Watchlist System with Analytics (`/watchlist`)
 - **Local Persistence:** Powered by Zustand with `persist` middleware (`localStorage`).
-- **Reactive Navigation Counter:** Badge count in the global navbar updates immediately upon adding/removing items.
-- **Filtering by Media Type:** View All, Movies Only, or TV Shows Only.
-- **Management Controls:** Individual item delete buttons and a global "Clear All" action.
-- **Empty State:** Illustrated empty state encouraging users to explore the catalog.
+- **Hydration Skeleton Loader:** Custom `WatchlistSkeleton` and Next.js streaming `loading.tsx` display during Zustand rehydration, eliminating jarring flashes of "Watchlist is empty".
+- **Cinephile Analytics Dashboard:** 4 reactive metrics derived directly from saved item data:
+  - Total Saved Items
+  - Watched Completion Rate (%)
+  - Average TMDB Critic Rating
+  - Total Watch Time (Hours & Minutes)
+- **Status Filtering & Toggle:** Mark individual items as "Want to Watch" vs "Watched", with filter tabs (`All`, `Want to Watch`, `Watched`).
+- **Dual View Modes:** Toggle between Poster Grid view and compact Filmstrip List view.
+- **Reactive Navigation Counter:** Live badge count in both the desktop navbar and mobile bottom dock.
+- **Architectural Decision Note:** *See Section 4.1 for why client-side LocalStorage is preferred over TMDB's 3-legged OAuth `/3/account/{account_id}/watchlist` endpoint.*
 
-### 3.7 People & Cast Directory (`/people`)
+### 3.7 People & Cast Directory (`/people` & `/people/[id]`)
 - **Celebrity Gallery:** Grid of trending actors, directors, and writers.
 - **Card Information:** Profile image, known-for department, and top 2 famous works.
-- **Pagination Support:** Multi-page browsing of global talent.
+- **Profile Detail View:** Full biography, birthplace, birthday, aliases, and comprehensive filmography grid.
+
+### 3.8 Native Mobile App Experience (`<MobileTabBar />`)
+- **Fixed Bottom Navigation Dock:** Always accessible at the bottom of the screen on mobile devices (`< 768px`).
+- **5 Core Thumb-Reachable Tabs:** Home, Movies, TV Series, Search (opens Command Modal), and Watchlist (with badge).
+- **Safe-Area Insets:** Supports `pb-[max(env(safe-area-inset-bottom),8px)]` for bezel-less modern smartphones.
+- **Haptic Touch Micro-interactions:** `active:scale-90` tactile feedback on tab press.
+- **Compact Top App Bar:** Sleek `h-14` header keeping the viewport uncluttered.
+- **No Content Collision:** Main layout includes `pb-24 md:pb-8` to ensure no UI or pagination elements are hidden behind the bottom dock.
 
 ---
 
 ## 4. TMDB API Endpoint Coverage Matrix
 
-The specification required at least **4 endpoints**. This implementation integrates **12 endpoints**:
+The specification required at least **4 endpoints**. This implementation integrates **15 endpoints**:
 
 | # | Endpoint | Description | Page / Component |
 |---|---|---|---|
@@ -120,14 +128,22 @@ The specification required at least **4 endpoints**. This implementation integra
 | 14 | `GET /person/popular` | Trending actors & creators | Home, People Page |
 | 15 | `GET /search/multi` | Unified multi-entity search | Global Search (`/search`) |
 
+### 4.1 Architectural Decision Record: Watchlist Storage Strategy
+> **Question:** *Why use Zustand + `localStorage` instead of TMDB's `POST /3/account/{account_id}/watchlist` endpoint?*
+>
+> **Rationale:**
+> 1. **Zero Authentication Friction for Reviewers:** TMDB's account watchlist endpoint requires a `session_id` obtained via 3-Legged OAuth (redirecting to themoviedb.org for personal login). Assessors reviewing the tech test would be blocked unless they held personal TMDB credentials.
+> 2. **User Data Isolation:** Hardcoding a shared API session would cause all visitors worldwide to share and overwrite the exact same watchlist. LocalStorage guarantees 100% private, isolated data per device.
+> 3. **Offline & Instant State:** Local storage provides 0ms latency, zero rate-limit risks, and supports extended features (such as "Plan to Watch" vs "Watched" status and watch-time analytics) not natively offered by TMDB.
+
 ---
 
 ## 5. Non-Functional & Quality Requirements
 
-- **Performance & Core Web Vitals:** First Contentful Paint (FCP) < 1.2s, Largest Contentful Paint (LCP) < 2.0s, Cumulative Layout Shift (CLS) = 0.
-- **Accessibility (A11y):** Keyboard navigable (`Tab`, `Enter`, `Escape`), semantic landmark tags (`<header>`, `<main>`, `<footer>`, `<section>`, `<nav>`), `aria-label` on icon-only buttons.
-- **Graceful Loading & Fallbacks:** Custom skeleton shimmer components (`Skeleton`) during data retrieval; placeholder images when posters/avatars are missing from TMDB.
-- **Error Handling:** Global `error.tsx` boundary with retry capabilities and network error logging.
+- **Performance & Core Web Vitals:** Next.js Turbopack compilation under 2s; all images have explicit responsive `sizes` and `loading="eager"` / `priority` on above-the-fold banners to eliminate LCP warnings.
+- **Accessibility (A11y):** Keyboard navigable (`Tab`, `Enter`, `Escape`), semantic landmark tags (`<header>`, `<main>`, `<footer>`, `<section>`, `<nav>`), `aria-label` on all icon-only buttons.
+- **Graceful Loading & Fallbacks:** Dedicated route `loading.tsx` skeletons and in-component shimmer skeletons.
+- **Error Handling:** Global `error.tsx` boundary with retry capabilities.
 - **Responsive Design:** Fluid breakpoints supporting Mobile ($375\text{px} - 640\text{px}$), Tablet ($768\text{px} - 1024\text{px}$), and Desktop ($1280\text{px} - 1920\text{px}$).
 
 ---
@@ -135,11 +151,11 @@ The specification required at least **4 endpoints**. This implementation integra
 ## 6. Verification & Acceptance Criteria
 
 1. Web app launches cleanly on `npm run dev` with zero runtime console errors.
-2. Build generates 100% static & server-rendered pages via `npm run build`.
-3. All 34 Vitest unit tests pass successfully via `npm run test`.
-4. Playwright E2E tests execute and validate user flows via `npm run test:e2e`.
+2. Build generates 100% static & server-rendered pages via `npm run build` (0 TypeScript errors).
+3. All **45 Vitest unit tests** pass successfully via `npm run test`.
+4. All **26 Playwright E2E tests** pass across Chromium Desktop and Mobile Chrome via `npm run test:e2e`.
 5. Watchlist items remain saved after browser refreshes or new session tabs.
-6. Search results filter seamlessly across Movie, TV, and People categories.
+6. Mobile bottom navigation dock displays on mobile viewports and navigates seamlessly.
 
 ---
 
