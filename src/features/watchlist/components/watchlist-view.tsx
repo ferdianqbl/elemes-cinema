@@ -9,12 +9,13 @@ import {
   Tv,
   ArrowRight,
   Bookmark,
-  Clock,
   Star,
   CheckCircle2,
   Circle,
   LayoutGrid,
   List,
+  Sparkles,
+  Trophy,
 } from "lucide-react";
 import { useWatchlistStore } from "@/store/use-watchlist-store";
 import { calculateWatchlistStats } from "@/lib/analytics";
@@ -60,19 +61,19 @@ export function WatchlistView() {
 
   return (
     <div className="space-y-8">
-      {/* Cinephile Analytics Dashboard Bar */}
+      {/* Cinephile Analytics Dashboard Bar (100% derived from TMDB item data & user status) */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-lg bg-[#07090E] border border-white/10">
-        {/* Total Watch Time */}
+        {/* Total Items Saved */}
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-cyan-950/70 border border-cyan-500/30 text-cyan-400 shrink-0">
-            <Clock className="h-4 w-4" />
+            <Sparkles className="h-4 w-4" />
           </div>
           <div>
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
-              Total Watch Time
+              Total Saved
             </p>
             <p className="text-sm sm:text-base font-semibold text-white tabular-nums">
-              {stats.formattedTime}
+              {stats.totalCount} Titles
             </p>
           </div>
         </div>
@@ -84,7 +85,7 @@ export function WatchlistView() {
           </div>
           <div>
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
-              Cinephile Score
+              Average Score
             </p>
             <p className="text-sm sm:text-base font-semibold text-white tabular-nums">
               {stats.averageRating > 0 ? `${stats.averageRating} / 10` : "N/A"}
@@ -92,32 +93,32 @@ export function WatchlistView() {
           </div>
         </div>
 
-        {/* Movies Saved */}
+        {/* Top Score Title */}
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-sky-950/70 border border-sky-500/30 text-sky-400 shrink-0">
-            <Film className="h-4 w-4" />
+            <Trophy className="h-4 w-4" />
           </div>
           <div>
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
-              Saved Movies
+              Highest Rating
             </p>
             <p className="text-sm sm:text-base font-semibold text-white tabular-nums">
-              {stats.movieCount} Titles
+              {stats.highestRating > 0 ? `${stats.highestRating} / 10` : "N/A"}
             </p>
           </div>
         </div>
 
-        {/* TV Series Saved */}
+        {/* Watched Progress */}
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-purple-950/70 border border-purple-500/30 text-purple-400 shrink-0">
-            <Tv className="h-4 w-4" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 shrink-0">
+            <CheckCircle2 className="h-4 w-4" />
           </div>
           <div>
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
-              Saved TV Series
+              Watch Progress
             </p>
             <p className="text-sm sm:text-base font-semibold text-white tabular-nums">
-              {stats.tvCount} Series
+              {stats.watchedCount} of {stats.totalCount} ({stats.completionRate}%)
             </p>
           </div>
         </div>

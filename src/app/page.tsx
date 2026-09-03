@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React from "react";
 import {
   usePopularMovies,
   useNowPlayingMovies,
   useTopRatedMovies,
 } from "@/features/movies/hooks/use-movies";
-import { usePopularTv, useTopRatedTv } from "@/features/tv/hooks/use-tv";
+import { usePopularTv } from "@/features/tv/hooks/use-tv";
 import { usePopularPeople } from "@/features/people/hooks/use-people";
 import { MovieHero } from "@/features/movies/components/movie-hero";
 import { MovieGrid } from "@/features/movies/components/movie-grid";
@@ -17,10 +16,15 @@ import { PersonCard } from "@/features/people/components/person-card";
 import { SectionHeader } from "@/components/layout/section-header";
 import { AmbientGlow } from "@/components/ui/ambient-glow";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 
 export default function HomePage() {
-  const topTenScrollRef = useRef<HTMLDivElement>(null);
-
   const { data: popularMoviesData, isLoading: isPopularMoviesLoading } =
     usePopularMovies({ page: 1 });
   const { data: nowPlayingData, isLoading: isNowPlayingLoading } =
@@ -29,7 +33,6 @@ export default function HomePage() {
     useTopRatedMovies({ page: 1 });
   const { data: popularTvData, isLoading: isPopularTvLoading } =
     usePopularTv({ page: 1 });
-  const { data: topRatedTvData } = useTopRatedTv({ page: 1 });
   const { data: popularPeopleData, isLoading: isPopularPeopleLoading } =
     usePopularPeople({ page: 1 });
 
@@ -38,13 +41,6 @@ export default function HomePage() {
   const widescreenTvShows = (popularTvData?.results || []).slice(0, 6);
   const topRatedMovies = (topRatedMoviesData?.results || []).slice(0, 10);
   const popularPeople = popularPeopleData?.results?.slice(0, 6) || [];
-
-  const scrollTopTen = (direction: "left" | "right") => {
-    if (topTenScrollRef.current) {
-      const scrollAmount = direction === "left" ? -400 : 400;
-      topTenScrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
 
   return (
     <div className="space-y-16">
@@ -57,55 +53,51 @@ export default function HomePage() {
         />
       </section>
 
-      {/* 2. Top 10 Ranked Cinema (Editorial Big Numbers) */}
+      {/* 2. Top 10 Ranked Cinema using Shadcn Base Carousel */}
       <section aria-label="Top 10 Ranked Cinema" className="relative">
-        <div className="flex items-center justify-between mb-4">
-          <SectionHeader
-            title="Top 10 in Cinema Today"
-            subtitle="The highest-trending films watched across the globe"
-            actionHref="/movies"
-            actionLabel="View All"
-          />
-          {/* Slider Chevrons */}
-          <div className="hidden sm:flex items-center gap-1.5 shrink-0">
-            <button
-              type="button"
-              onClick={() => scrollTopTen("left")}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-[#07090E] text-slate-300 hover:text-cyan-400 hover:border-cyan-400/40 transition-colors cursor-pointer"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollTopTen("right")}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-[#07090E] text-slate-300 hover:text-cyan-400 hover:border-cyan-400/40 transition-colors cursor-pointer"
-              aria-label="Scroll right"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
+        <Carousel
+          opts={{
+            align: "start",
+            dragFree: true,
+          }}
+          className="w-full"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <SectionHeader
+              title="Top 10 in Cinema Today"
+              subtitle="The highest-trending films watched across the globe"
+              actionHref="/movies"
+              actionLabel="View All"
+            />
+            {/* Carousel Previous & Next Controls (ECDS Styled) */}
+            <div className="hidden sm:flex items-center gap-2 shrink-0">
+              <CarouselPrevious className="static translate-y-0" />
+              <CarouselNext className="static translate-y-0" />
+            </div>
           </div>
-        </div>
 
-        {isPopularMoviesLoading ? (
-          <div className="flex gap-4 overflow-hidden">
-            {Array.from({ length: 5 }).map((_, idx) => (
-              <div key={idx} className="shrink-0 w-44 space-y-2">
-                <Skeleton className="aspect-[2/3] w-full rounded-lg" />
-                <Skeleton className="h-4 w-3/4" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div
-            ref={topTenScrollRef}
-            className="flex gap-6 overflow-x-auto pb-4 pt-2 no-scrollbar scroll-smooth pl-2"
-          >
-            {topTenMovies.map((movie, index) => (
-              <TopTenCard key={movie.id} movie={movie} rank={index + 1} />
-            ))}
-          </div>
-        )}
+          {isPopularMoviesLoading ? (
+            <div className="flex gap-4 overflow-hidden">
+              {Array.from({ length: 5 }).map((_, idx) => (
+                <div key={idx} className="shrink-0 w-44 space-y-2">
+                  <Skeleton className="aspect-[2/3] w-full rounded-lg" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <CarouselContent className="-ml-3 sm:-ml-4 pb-4 pt-2">
+              {topTenMovies.map((movie, index) => (
+                <CarouselItem
+                  key={movie.id}
+                  className="pl-3 sm:pl-4 basis-auto"
+                >
+                  <TopTenCard movie={movie} rank={index + 1} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          )}
+        </Carousel>
       </section>
 
       {/* 3. Prime Time Television (16:9 Widescreen Landscape Cards) */}

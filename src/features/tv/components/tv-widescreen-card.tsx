@@ -74,9 +74,11 @@ export function TvWidescreenCard({ tv }: TvWidescreenCardProps) {
             {formatYear(tv.first_air_date)}
           </span>
         </div>
-        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-          {tv.overview || "Stream this hit television series with complete broadcast season coverage."}
-        </p>
+        {tv.overview && (
+          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+            {tv.overview}
+          </p>
+        )}
       </div>
     </div>
   );

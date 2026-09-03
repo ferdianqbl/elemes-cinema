@@ -6,6 +6,9 @@ export interface BoxOfficeRoiResult {
   profit: number;
 }
 
+/**
+ * Calculates Box Office Return on Investment based on TMDB movie budget & revenue.
+ */
 export function calculateBoxOfficeRoi(
   budget: number | null | undefined,
   revenue: number | null | undefined
@@ -63,30 +66,34 @@ export function calculateBoxOfficeRoi(
 }
 
 export interface WatchlistStatsResult {
-  totalMinutes: number;
-  totalHours: number;
-  remainingMinutes: number;
-  formattedTime: string;
-  averageRating: number;
+  totalCount: number;
   movieCount: number;
   tvCount: number;
+  averageRating: number;
+  highestRating: number;
+  watchedCount: number;
+  completionRate: number;
 }
 
+/**
+ * Calculates collection statistics derived strictly from real API item data & user status.
+ */
 export function calculateWatchlistStats(
   items: Array<{
     media_type: string;
     vote_average?: number;
+    status?: string;
   }>
 ): WatchlistStatsResult {
   if (!items || items.length === 0) {
     return {
-      totalMinutes: 0,
-      totalHours: 0,
-      remainingMinutes: 0,
-      formattedTime: "0h 0m",
-      averageRating: 0,
+      totalCount: 0,
       movieCount: 0,
       tvCount: 0,
+      averageRating: 0,
+      highestRating: 0,
+      watchedCount: 0,
+      completionRate: 0,
     };
   }
 
@@ -94,6 +101,8 @@ export function calculateWatchlistStats(
   let tvCount = 0;
   let ratingSum = 0;
   let ratedItemsCount = 0;
+  let highestRating = 0;
+  let watchedCount = 0;
 
   for (const item of items) {
     if (item.media_type === "movie") {
@@ -102,26 +111,31 @@ export function calculateWatchlistStats(
       tvCount += 1;
     }
 
+    if (item.status === "watched") {
+      watchedCount += 1;
+    }
+
     if (item.vote_average && item.vote_average > 0) {
       ratingSum += item.vote_average;
       ratedItemsCount += 1;
+      if (item.vote_average > highestRating) {
+        highestRating = item.vote_average;
+      }
     }
   }
 
-  // Estimated average runtime: Movie = 115 min, TV Show Season/Miniseries = ~360 min
-  const estimatedTotalMinutes = movieCount * 115 + tvCount * 360;
-  const totalHours = Math.floor(estimatedTotalMinutes / 60);
-  const remainingMinutes = estimatedTotalMinutes % 60;
   const averageRating =
     ratedItemsCount > 0 ? Number((ratingSum / ratedItemsCount).toFixed(1)) : 0;
+  const completionRate =
+    items.length > 0 ? Math.round((watchedCount / items.length) * 100) : 0;
 
   return {
-    totalMinutes: estimatedTotalMinutes,
-    totalHours,
-    remainingMinutes,
-    formattedTime: `${totalHours}h ${remainingMinutes}m`,
-    averageRating,
+    totalCount: items.length,
     movieCount,
     tvCount,
+    averageRating,
+    highestRating: Number(highestRating.toFixed(1)),
+    watchedCount,
+    completionRate,
   };
 }
