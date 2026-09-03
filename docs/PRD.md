@@ -123,3 +123,11 @@ The application is inspired by modern streaming interfaces (Apple TV+ / Netflix 
 - [x] Unit test suite exceeding 90% coverage (**92.21% achieved across 64 tests**).
 - [x] End-to-end Playwright tests passing 100% (**26 / 26 passed**).
 - [x] Production build passes cleanly with zero errors (`npm run build`).
+
+---
+
+## 6. Related Documentation
+- **Technical Architecture Blueprint:** [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md)
+- **TMDB API Specification & Schemas:** [`docs/API_DOCUMENTATION.md`](./API_DOCUMENTATION.md)
+- **Design System Tokens:** [`docs/DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md)
+- **Quality Assurance Matrix:** [`docs/FEATURE_VALIDATIONS.md`](./FEATURE_VALIDATIONS.md)

@@ -176,9 +176,59 @@ This protects user experiences against temporary TMDB service hiccups or rate li
 - Layout Spacing: `<main>` incorporates `pb-24 md:pb-8` to guarantee zero overlap with scrollable content, cards, and pagination buttons.
 - Touch Shelves: Category and genre filters on mobile use `.no-scrollbar` with momentum swipe scrolling (`overflow-x-auto`).
 
+### 4.6 SSR Hydration Guard & LocalStorage Strategy
+- **The Hydration Challenge:** `localStorage` is unavailable during SSR on the server. If client components render stored items on initial pass, a React hydration mismatch (Error #418) occurs.
+- **The Pattern:** In `WatchlistView`, we enforce a two-pass hydration guard:
+  ```typescript
+  const [hasHydrated, setHasHydrated] = useState(false);
+  useEffect(() => { setHasHydrated(true); }, []);
+  if (!hasHydrated) return <WatchlistSkeleton />;
+  ```
+  This displays a shimmer skeleton during the initial render and immediately hydrates client storage with zero layout shifts (CLS).
+
+### 4.7 Suspense Boundaries for URL Query Synchronization
+- **The Challenge:** Next.js App Router opts routes out of static generation if `useSearchParams()` is called directly without a `<Suspense>` boundary.
+- **The Pattern:** In both `/movies/page.tsx` and `/tv/page.tsx`, we decouple the route page from the content consumer:
+  ```tsx
+  export default function MoviesPage() {
+    return (
+      <Suspense fallback={<CatalogLoadingSkeleton />}>
+        <MoviesContent />
+      </Suspense>
+    );
+  }
+  ```
+  This allows Next.js to statically prerender the page shell (`○ (Static)`) while dynamically streaming the category-driven and genre-driven query params.
+
+### 4.8 Deterministic Query Key Factories
+- All TanStack Query hooks utilize centralized key factories (`movieKeys`, `tvKeys`, `searchKeys`, `peopleKeys`):
+  ```typescript
+  export const movieKeys = {
+    all: ["movies"] as const,
+    byCategory: (category: MovieCategory, params?: PaginationParams) =>
+      [...movieKeys.all, "category", category, params] as const,
+    detail: (id: number | string) => [...movieKeys.all, "detail", id] as const,
+    watchProviders: (id: number | string) => [...movieKeys.all, "watchProviders", id] as const,
+    byGenre: (genreId: number, page?: number) => [...movieKeys.all, "genre", genreId, page] as const,
+  };
+  ```
+- **Benefits:** Prevents cache collisions, enforces type safety with tuples (`as const`), and allows granular or bulk query invalidations (`queryClient.invalidateQueries({ queryKey: movieKeys.all })`).
+
 ---
 
-## 5. Testing & Code Quality Blueprint
+## 5. Architectural Trade-Offs & Decisions Matrix
+
+| Architectural Decision | Chosen Implementation | Alternative Rejected | Core Technical Rationale |
+|---|---|---|---|
+| **Watchlist State** | Zustand + `localStorage` | TMDB `POST /account/.../watchlist` | Eliminates evaluator login friction (no 3-legged OAuth required), guarantees 100% private data isolation, and works offline. |
+| **State Separation** | TanStack Query + Zustand | Monolithic Redux Toolkit | Clean separation between asynchronous remote server cache (TanStack) and synchronous client UI state (Zustand). Eliminates hundreds of lines of boilerplate. |
+| **Styling Engine** | Tailwind CSS v4 | CSS Modules / Emotion | Zero runtime CSS injection, native modern CSS variables (`@theme inline`), and instant hot reload via Turbopack. |
+| **UI Animations** | Motion (`motion/react`) | CSS `@keyframes` | True physics-based springs (`stiffness: 450, damping: 35`), shared layout ID animations (`layoutId="activeMovieTabIndicator"`), and `<AnimatePresence>` unmount transitions. |
+| **URL Synchronization** | Query Strings (`?category=...`) | Component `useState` | Enables deep linking, bookmarkable URLs, browser Back/Forward history navigation, and direct navbar activation. |
+
+---
+
+## 6. Testing & Code Quality Blueprint
 
 ### Code Coverage Metrics (Vitest v8)
 ```
@@ -186,7 +236,7 @@ This protects user experiences against temporary TMDB service hiccups or rate li
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Status
 -------------------|---------|----------|---------|---------|-------------------
-All files          |   92.21 |    83.33 |   90.32 |   92.21 | PASSED (>90%)
+All files          |   92.21 |    83.89 |   90.32 |   92.21 | PASSED (>90%)
  components/layout |     100 |      100 |     100 |     100 | PASSED
  components/ui     |   78.33 |    59.09 |     100 |   78.33 | PASSED
  movies/services   |     100 |      100 |     100 |     100 | PASSED

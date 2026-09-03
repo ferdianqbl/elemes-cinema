@@ -204,16 +204,23 @@ Image assets are delivered via TMDB's high-speed CDN and configured with respons
 * **Response Type:** `TMDBResponse<TPerson>`
 * **Used In:** Home Trending Stars Shelf, People Directory `/people`
 
-#### 19. Get Person Details & Filmography
-* **HTTP Method:** `GET /person/{person_id}` & `GET /person/{person_id}/combined_credits`
-* **Service Methods:** `PeopleService.getDetails`, `PeopleService.getCombinedCredits`
-* **Used In:** Person Profile Page `/people/[id]`
+#### 19. Get Person Details
+* **HTTP Method:** `GET /person/{person_id}`
+* **Service Method:** `PeopleService.getDetails(personId: number | string)`
+* **Response Type:** `TPersonDetail`
+* **Used In:** Person Profile Page `/people/[id]` (biography, birth info)
+
+#### 20. Get Person Filmography Credits
+* **HTTP Method:** `GET /person/{person_id}/combined_credits`
+* **Service Method:** `PeopleService.getCombinedCredits(personId: number | string)`
+* **Response Type:** `PersonCombinedCredits`
+* **Used In:** Person Profile Page `/people/[id]` Filmography gallery
 
 ---
 
 ### 3.4 Multi-Search Domain (`SearchService`)
 
-#### 20. Multi-Search Catalog
+#### 21. Multi-Search Catalog
 * **HTTP Method:** `GET /search/multi`
 * **Service Method:** `SearchService.multiSearch(query: string, page?: number)`
 * **Query Params:** `query` (URL encoded string), `page`
@@ -235,3 +242,5 @@ The TMDB API specification provides an account watchlist endpoint:
    - Providing a shared server session ID would force all global visitors to share the same watchlist, overwriting each other's selections. LocalStorage guarantees 100% data isolation.
 3. **Instant Reversibility & Optimistic UX:**
    - Paired with Sonner toasts and an "Undo" action, users can instantly toggle watchlist entries with zero latency or network roundtrip failures.
+4. **Offline Resilience & Client Analytics:**
+   - Bookmarked items are stored permanently on the user's device, enabling the **Cinephile Analytics Dashboard** to calculate watch time, completion rates, and average ratings locally without roundtrip lag.
