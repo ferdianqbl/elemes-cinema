@@ -1,10 +1,10 @@
 # TMDB API Integration Documentation
 
-**Project:** Elemes Cinema — Movie & TV Show Catalog Web App  
+**Project:** Elemes — Movie & TV Show Catalog Web App  
 **API Provider:** [The Movie Database (TMDB) REST API v3 / v4](https://developer.themoviedb.org/docs)  
-**Status:** 15 Active Integrated Endpoints  
+**Status:** 17 Active Integrated Endpoints  
 **Document Path:** `workspace/docs/API_DOCUMENTATION.md`  
-**Version:** 1.2.0  
+**Version:** 1.3.0  
 
 ---
 
@@ -27,8 +27,9 @@ NEXT_PUBLIC_TMDB_ACCESS_TOKEN=your_v4_bearer_token
 NEXT_PUBLIC_TMDB_API_KEY=your_v3_api_key
 ```
 
-### Axios Client Interceptor (`src/lib/axios.ts`)
+### Axios Client Interceptor & Resilience Policy (`src/lib/axios.ts`)
 ```typescript
+// 1. Request interceptor for token attachment
 apiClient.interceptors.request.use((config) => {
   if (ACCESS_TOKEN) {
     config.headers.Authorization = `Bearer ${ACCESS_TOKEN}`;
@@ -37,6 +38,26 @@ apiClient.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// 2. Response interceptor: Exponential Backoff & Jitter retry for 429 and 5xx
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const config = error.config as AxiosRequestConfig & { _retryCount?: number };
+    const status = error.response?.status;
+    const isRetryable = status === 429 || (status && status >= 500 && status < 600);
+    const isGet = (config.method || "get").toLowerCase() === "get";
+
+    if (config && isRetryable && isGet && (!config._retryCount || config._retryCount < 2)) {
+      config._retryCount = (config._retryCount || 0) + 1;
+      const baseDelay = 1000 * Math.pow(2, config._retryCount - 1);
+      const jitter = Math.random() * 250;
+      await new Promise((resolve) => setTimeout(resolve, baseDelay + jitter));
+      return apiClient(config);
+    }
+    return Promise.reject(error);
+  }
+);
 ```
 
 ---
@@ -50,11 +71,12 @@ Image assets are delivered via TMDB's high-speed CDN and configured with respons
 | **Poster Art** | `w92`, `w154`, `w185`, `w342`, `w500`, `w780`, `original` | `getPosterUrl(path, 'w500')` | `/placeholder-poster.png` |
 | **Backdrop Hero** | `w300`, `w780`, `w1280`, `original` | `getBackdropUrl(path, 'original')` | `/placeholder-backdrop.png` |
 | **Person Profile**| `w45`, `w185`, `h632`, `original` | `getProfileUrl(path, 'h632')` | `/placeholder-avatar.png` |
+| **Provider Logo** | `w92`, `original` | `https://image.tmdb.org/t/p/w92{logo_path}` | Default icon |
 | **YouTube Video** | Embed iframe (`youtube-nocookie.com`) | `getYouTubeEmbedUrl(key)` | `null` |
 
 ---
 
-## 3. Detailed Endpoint Reference Matrix
+## 3. Detailed Endpoint Reference Matrix (17 Active Endpoints)
 
 ### 3.1 Movies Domain (`MovieService`)
 
@@ -77,7 +99,7 @@ Image assets are delivered via TMDB's high-speed CDN and configured with respons
 * **Service Method:** `MovieService.getNowPlaying(params?: PaginationParams)`
 * **Query Params:** `page` (default: 1)
 * **Response Type:** `TMDBResponse<TMovie>`
-* **Used In:** Home Featured Hero Banner, Movies Catalog `/movies` (`?category=now_playing`)
+* **Used In:** Home Featured Hero Carousel, Movies Catalog `/movies` (`?category=now_playing`)
 
 #### 4. Get Upcoming Movies
 * **HTTP Method:** `GET /movie/upcoming`
@@ -112,51 +134,77 @@ Image assets are delivered via TMDB's high-speed CDN and configured with respons
 * **Response Type:** `TMDBResponse<TMovie>`
 * **Used In:** Movie Detail Page `/movies/[id]` Recommendations Shelf
 
+#### 9. Get Movie Watch Providers (Where to Stream)
+* **HTTP Method:** `GET /movie/{movie_id}/watch/providers`
+* **Service Method:** `MovieService.getWatchProviders(movieId: number | string)`
+* **Response Type:** `WatchProvidersResponse` (`results: Record<string, WatchProvidersCountry>`)
+* **Used In:** Movie Detail Page `/movies/[id]` Where to Watch streaming section (Netflix, Disney+, etc.)
+
+#### 10. Discover Movies by Genre
+* **HTTP Method:** `GET /discover/movie`
+* **Service Method:** `MovieService.discoverByGenre(genreId: number, page?: number)`
+* **Query Params:** `with_genres`, `page`, `sort_by=popularity.desc`
+* **Response Type:** `TMDBResponse<TMovie>`
+* **Used In:** Movies Catalog `/movies` Quick Genre Filter Bar
+
 ---
 
 ### 3.2 TV Shows Domain (`TvService`)
 
-#### 9. Get Popular TV Shows
+#### 11. Get Popular TV Shows
 * **HTTP Method:** `GET /tv/popular`
 * **Service Method:** `TvService.getPopular(params?: PaginationParams)`
 * **Response Type:** `TMDBResponse<TTvShow>`
 * **Used In:** TV Catalog `/tv` (`?category=popular`)
 
-#### 10. Get Top Rated TV Shows
+#### 12. Get Top Rated TV Shows
 * **HTTP Method:** `GET /tv/top_rated`
 * **Service Method:** `TvService.getTopRated(params?: PaginationParams)`
 * **Response Type:** `TMDBResponse<TTvShow>`
 * **Used In:** Home Page Top Rated Shelf, TV Catalog `/tv` (`?category=top_rated`)
 
-#### 11. Get TV Shows On The Air
+#### 13. Get TV Shows On The Air
 * **HTTP Method:** `GET /tv/on_the_air`
 * **Service Method:** `TvService.getOnTheAir(params?: PaginationParams)`
 * **Response Type:** `TMDBResponse<TTvShow>`
 * **Used In:** TV Catalog `/tv` (`?category=on_the_air`)
 
-#### 12. Get TV Shows Airing Today
+#### 14. Get TV Shows Airing Today
 * **HTTP Method:** `GET /tv/airing_today`
 * **Service Method:** `TvService.getAiringToday(params?: PaginationParams)`
 * **Response Type:** `TMDBResponse<TTvShow>`
 * **Used In:** TV Catalog `/tv` (`?category=airing_today`)
 
-#### 13. Get TV Show Details
+#### 15. Get TV Show Details
 * **HTTP Method:** `GET /tv/{series_id}`
 * **Service Method:** `TvService.getDetails(tvId: number | string)`
 * **Response Type:** `TTvShowDetail`
 * **Used In:** TV Detail Page `/tv/[id]` (Seasons Breakdown, Production Studios)
 
+#### 16. Get TV Watch Providers (Where to Stream)
+* **HTTP Method:** `GET /tv/{series_id}/watch/providers`
+* **Service Method:** `TvService.getWatchProviders(tvId: number | string)`
+* **Response Type:** `WatchProvidersResponse`
+* **Used In:** TV Detail Page `/tv/[id]` Where to Watch streaming section
+
+#### 17. Discover TV Series by Genre
+* **HTTP Method:** `GET /discover/tv`
+* **Service Method:** `TvService.discoverByGenre(genreId: number, page?: number)`
+* **Query Params:** `with_genres`, `page`, `sort_by=popularity.desc`
+* **Response Type:** `TMDBResponse<TTvShow>`
+* **Used In:** TV Catalog `/tv` Quick Genre Filter Bar
+
 ---
 
-### 3.3 People & Celebrities Domain (`PeopleService`)
+### 3.3 People Domain (`PeopleService`)
 
-#### 14. Get Popular People
+#### 18. Get Popular People
 * **HTTP Method:** `GET /person/popular`
 * **Service Method:** `PeopleService.getPopular(params?: PaginationParams)`
 * **Response Type:** `TMDBResponse<TPerson>`
 * **Used In:** Home Trending Stars Shelf, People Directory `/people`
 
-#### 15. Get Person Details & Filmography
+#### 19. Get Person Details & Filmography
 * **HTTP Method:** `GET /person/{person_id}` & `GET /person/{person_id}/combined_credits`
 * **Service Methods:** `PeopleService.getDetails`, `PeopleService.getCombinedCredits`
 * **Used In:** Person Profile Page `/people/[id]`
@@ -165,7 +213,7 @@ Image assets are delivered via TMDB's high-speed CDN and configured with respons
 
 ### 3.4 Multi-Search Domain (`SearchService`)
 
-#### 16. Multi-Search Catalog
+#### 20. Multi-Search Catalog
 * **HTTP Method:** `GET /search/multi`
 * **Service Method:** `SearchService.multiSearch(query: string, page?: number)`
 * **Query Params:** `query` (URL encoded string), `page`
@@ -174,84 +222,16 @@ Image assets are delivered via TMDB's high-speed CDN and configured with respons
 
 ---
 
-## 4. Architectural Evaluation: TMDB Account Watchlist vs. LocalStorage
+## 4. Architectural Decision: TMDB Account Watchlist vs. LocalStorage
 
 The TMDB API specification provides an account watchlist endpoint:
 `POST https://api.themoviedb.org/3/account/{account_id}/watchlist`
 
-### Endpoint Specification & Prerequisites
-- **Path Parameter:** `{account_id}`
-- **Query Parameter:** `session_id` (or v4 User Access Token)
-- **Request Body:**
-  ```json
-  {
-    "media_type": "movie",
-    "media_id": 550,
-    "watchlist": true
-  }
-  ```
-
-### Why Elemes Cinema Uses Zustand + LocalStorage
-1. **Elimination of Evaluator Friction:**
+### Why Elemes Uses Zustand + LocalStorage
+1. **Zero Evaluator Friction:**
    - The TMDB endpoint mandates a 3-Legged OAuth redirection flow (`/authentication/token/new` ➔ redirect to `themoviedb.org/authenticate` ➔ `/authentication/session/new`).
    - Technical test reviewers assessing this project would be blocked from testing bookmarking without personal TMDB accounts.
 2. **User Data Isolation:**
    - Providing a shared server session ID would force all global visitors to share the same watchlist, overwriting each other's selections. LocalStorage guarantees 100% data isolation.
-3. **Extended Offline-First Feature Capabilities:**
-   - Client storage allows instant 0ms optimistic updates, zero rate-limit hazards, and custom fields not supported by TMDB (such as "Want to Watch" vs "Watched" status toggles, and reactive cinephile watch-time analytics).
-
----
-
-## 5. TypeScript Interface Contracts
-
-```typescript
-// Generic TMDB Paginated Response
-export interface TMDBResponse<T> {
-  page: number;
-  results: T[];
-  total_pages: number;
-  total_results: number;
-}
-
-// Core Movie Model
-export interface TMovie {
-  id: number;
-  title: string;
-  original_title: string;
-  overview: string;
-  poster_path: string | null;
-  backdrop_path: string | null;
-  release_date: string;
-  vote_average: number;
-  vote_count: number;
-  popularity: number;
-  genre_ids: number[];
-}
-
-// Core TV Show Model
-export interface TTvShow {
-  id: number;
-  name: string;
-  original_name: string;
-  overview: string;
-  poster_path: string | null;
-  backdrop_path: string | null;
-  first_air_date: string;
-  vote_average: number;
-  vote_count: number;
-  popularity: number;
-  genre_ids: number[];
-}
-```
-
----
-
-## 6. Error Handling & HTTP Status Matrix
-
-| Status Code | Reason | Handled Behavior |
-|---|---|---|
-| `200 OK` | Successful query | TanStack Query caches data with 5-minute `staleTime`. |
-| `401 Unauthorized` | Invalid TMDB API key or Bearer token | Logged to console with auth configuration hint; triggers global error boundary. |
-| `404 Not Found` | Non-existent Movie, TV, or Person ID | Rendered via custom friendly fallback views with a "Return to Catalog" button. |
-| `429 Rate Limit` | Exceeded TMDB request quota | Axios interceptor logs rate-limit event; React Query exponential backoff retries. |
-| `500 Server Error` | TMDB upstream downtime | Error boundary caught with `<GlobalError />` retry button. |
+3. **Instant Reversibility & Optimistic UX:**
+   - Paired with Sonner toasts and an "Undo" action, users can instantly toggle watchlist entries with zero latency or network roundtrip failures.

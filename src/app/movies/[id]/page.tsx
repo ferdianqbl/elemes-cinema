@@ -9,12 +9,14 @@ import {
   useMovieCredits,
   useMovieVideos,
   useSimilarMovies,
+  useMovieWatchProviders,
 } from "@/features/movies/hooks/use-movies";
 import { MovieCard } from "@/features/movies/components/movie-card";
 import { WatchlistButton } from "@/features/watchlist/components/watchlist-button";
 import { SectionHeader } from "@/components/layout/section-header";
 import { RatingBadge } from "@/components/ui/rating-badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { WatchProviders } from "@/components/ui/watch-providers";
 import {
   getBackdropUrl,
   getPosterUrl,
@@ -35,6 +37,7 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
   const { data: credits } = useMovieCredits(movieId);
   const { data: videos } = useMovieVideos(movieId);
   const { data: similar } = useSimilarMovies(movieId);
+  const { data: watchProviders } = useMovieWatchProviders(movieId);
 
   if (isMovieLoading) {
     return (
@@ -270,6 +273,11 @@ export default function MovieDetailPage({ params }: MovieDetailPageProps) {
                 </p>
               </div>
             )}
+
+            {/* Where to Stream / Watch Providers */}
+            <div className="pt-3">
+              <WatchProviders results={watchProviders?.results} />
+            </div>
           </div>
         </div>
       </div>

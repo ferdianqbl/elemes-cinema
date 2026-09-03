@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios";
 import { PaginationParams, TMDBResponse } from "@/types/api.types";
-import { CreditsResponse, VideoResponse } from "@/types/common.types";
+import { CreditsResponse, VideoResponse, WatchProvidersResponse } from "@/types/common.types";
 import { TMovie, TMovieDetail, MovieCategory } from "../types/movie.types";
 
 export const MovieService = {
@@ -71,6 +71,29 @@ export const MovieService = {
       `/movie/${movieId}/similar`,
       { params }
     );
+    return response.data;
+  },
+
+  getWatchProviders: async (
+    movieId: number | string
+  ): Promise<WatchProvidersResponse> => {
+    const response = await apiClient.get<WatchProvidersResponse>(
+      `/movie/${movieId}/watch/providers`
+    );
+    return response.data;
+  },
+
+  discoverByGenre: async (
+    genreId: number,
+    page: number = 1
+  ): Promise<TMDBResponse<TMovie>> => {
+    const response = await apiClient.get<TMDBResponse<TMovie>>("/discover/movie", {
+      params: {
+        with_genres: genreId,
+        page,
+        sort_by: "popularity.desc",
+      },
+    });
     return response.data;
   },
 };

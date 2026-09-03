@@ -138,8 +138,8 @@ export function Navbar() {
             <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-500 text-neutral-950">
               <Film className="h-4 w-4 sm:h-5 sm:w-5 fill-current" />
             </div>
-            <span className="font-light tracking-tight text-white text-sm sm:text-base lg:text-lg">
-              Elemes<span className="text-cyan-400 font-semibold">Cinema</span>
+            <span className="font-bold tracking-tight text-white text-base sm:text-lg">
+              Elemes
             </span>
           </Link>
 
@@ -397,11 +397,8 @@ export function Navbar() {
                     <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-400 text-neutral-950">
                       <Film className="h-4 w-4 fill-current" />
                     </div>
-                    <span>
+                    <span className="font-bold tracking-tight text-white text-base">
                       Elemes
-                      <span className="text-cyan-400 font-semibold">
-                        Cinema
-                      </span>
                     </span>
                   </DrawerTitle>
                   <DrawerDescription>

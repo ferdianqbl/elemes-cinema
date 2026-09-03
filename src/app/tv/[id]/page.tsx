@@ -9,12 +9,14 @@ import {
   useTvCredits,
   useTvVideos,
   useSimilarTv,
+  useTvWatchProviders,
 } from "@/features/tv/hooks/use-tv";
 import { TvCard } from "@/features/tv/components/tv-card";
 import { WatchlistButton } from "@/features/watchlist/components/watchlist-button";
 import { SectionHeader } from "@/components/layout/section-header";
 import { RatingBadge } from "@/components/ui/rating-badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { WatchProviders } from "@/components/ui/watch-providers";
 import {
   getBackdropUrl,
   getPosterUrl,
@@ -35,6 +37,7 @@ export default function TvDetailPage({ params }: TvDetailPageProps) {
   const { data: credits } = useTvCredits(tvId);
   const { data: videos } = useTvVideos(tvId);
   const { data: similar } = useSimilarTv(tvId);
+  const { data: watchProviders } = useTvWatchProviders(tvId);
 
   if (isTvLoading) {
     return (
@@ -266,6 +269,11 @@ export default function TvDetailPage({ params }: TvDetailPageProps) {
                 </p>
               </div>
             )}
+
+            {/* Where to Stream / Watch Providers */}
+            <div className="pt-3">
+              <WatchProviders results={watchProviders?.results} />
+            </div>
           </div>
         </div>
       </div>

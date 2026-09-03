@@ -16,6 +16,10 @@ export const tvKeys = {
   videos: (id: number | string) => [...tvKeys.all, "videos", id] as const,
   similar: (id: number | string, params?: PaginationParams) =>
     [...tvKeys.all, "similar", id, params] as const,
+  watchProviders: (id: number | string) =>
+    [...tvKeys.all, "watchProviders", id] as const,
+  byGenre: (genreId: number, page?: number) =>
+    [...tvKeys.all, "genre", genreId, page] as const,
 };
 
 export function usePopularTv(params?: PaginationParams) {
@@ -82,5 +86,21 @@ export function useSimilarTv(tvId: number | string, params?: PaginationParams) {
     queryKey: tvKeys.similar(tvId, params),
     queryFn: () => TvService.getSimilar(tvId, params),
     enabled: Boolean(tvId),
+  });
+}
+
+export function useTvWatchProviders(tvId: number | string) {
+  return useQuery({
+    queryKey: tvKeys.watchProviders(tvId),
+    queryFn: () => TvService.getWatchProviders(tvId),
+    enabled: Boolean(tvId),
+  });
+}
+
+export function useTvByGenre(genreId?: number, page: number = 1) {
+  return useQuery({
+    queryKey: tvKeys.byGenre(genreId || 0, page),
+    queryFn: () => TvService.discoverByGenre(genreId!, page),
+    enabled: Boolean(genreId),
   });
 }

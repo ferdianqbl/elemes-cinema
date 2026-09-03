@@ -3,14 +3,27 @@
 import React, { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { useMoviesByCategory } from "@/features/movies/hooks/use-movies";
+import { useMoviesByCategory, useMoviesByGenre } from "@/features/movies/hooks/use-movies";
 import { MovieCategory } from "@/features/movies/types/movie.types";
 import { MovieGrid } from "@/features/movies/components/movie-grid";
 import { MOVIE_CATEGORIES } from "@/lib/constants";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+
+const POPULAR_GENRES = [
+  { id: 0, label: "All Genres" },
+  { id: 28, label: "Action" },
+  { id: 12, label: "Adventure" },
+  { id: 16, label: "Animation" },
+  { id: 35, label: "Comedy" },
+  { id: 80, label: "Crime" },
+  { id: 18, label: "Drama" },
+  { id: 27, label: "Horror" },
+  { id: 878, label: "Sci-Fi" },
+  { id: 53, label: "Thriller" },
+];
 
 function MoviesContent() {
   const router = useRouter();
@@ -23,25 +36,37 @@ function MoviesContent() {
       : "popular";
 
   const [page, setPage] = useState<number>(1);
+  const [selectedGenreId, setSelectedGenreId] = useState<number>(0);
 
-  // When query param changes externally, reset page to 1
+  // When query param changes externally, reset page to 1 and genre to 0
   useEffect(() => {
     setPage(1);
+    setSelectedGenreId(0);
   }, [categoryQuery]);
 
-  const { data, isLoading, isPlaceholderData } = useMoviesByCategory(activeCategory, {
-    page,
-  });
+  const categoryQueryRes = useMoviesByCategory(activeCategory, { page });
+  const genreQueryRes = useMoviesByGenre(selectedGenreId > 0 ? selectedGenreId : undefined, page);
+
+  const isGenreActive = selectedGenreId > 0;
+  const currentData = isGenreActive ? genreQueryRes.data : categoryQueryRes.data;
+  const isLoading = isGenreActive ? genreQueryRes.isLoading : categoryQueryRes.isLoading;
+  const isPlaceholderData = isGenreActive ? genreQueryRes.isPlaceholderData : categoryQueryRes.isPlaceholderData;
 
   const handleCategoryChange = (val: MovieCategory) => {
+    setSelectedGenreId(0);
     setPage(1);
     router.push(`/movies?category=${val}`, { scroll: false });
   };
 
-  const totalPages = Math.min(data?.total_pages || 1, 500);
+  const handleGenreChange = (genreId: number) => {
+    setSelectedGenreId(genreId);
+    setPage(1);
+  };
+
+  const totalPages = Math.min(currentData?.total_pages || 1, 500);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Category Header with Animated Tabs */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -56,7 +81,7 @@ function MoviesContent() {
         {/* Tab Filters (Animated Pill Switcher - Horizontal Scroll on Mobile) */}
         <div className="relative flex items-center gap-1 sm:gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10 w-full sm:w-fit overflow-x-auto no-scrollbar scroll-smooth flex-nowrap shrink-0">
           {MOVIE_CATEGORIES.map((cat) => {
-            const isActive = activeCategory === cat.id;
+            const isActive = !isGenreActive && activeCategory === cat.id;
             return (
               <button
                 key={cat.id}
@@ -83,17 +108,43 @@ function MoviesContent() {
         </div>
       </div>
 
+      {/* Genre Filter Chips (Horizontal Touch Shelf) */}
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 -mt-2">
+        <div className="flex items-center gap-1 text-slate-500 text-xs shrink-0 mr-1">
+          <SlidersHorizontal className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline text-[11px] uppercase tracking-wider font-semibold">Genre:</span>
+        </div>
+        {POPULAR_GENRES.map((genre) => {
+          const isSelected = selectedGenreId === genre.id;
+          return (
+            <button
+              key={genre.id}
+              type="button"
+              onClick={() => handleGenreChange(genre.id)}
+              className={cn(
+                "px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 shrink-0 cursor-pointer active:scale-95",
+                isSelected
+                  ? "bg-cyan-950/80 text-cyan-400 border border-cyan-500/40 font-semibold shadow-sm shadow-cyan-500/10"
+                  : "bg-white/[0.04] text-slate-400 hover:text-white hover:bg-white/[0.08] border border-white/10"
+              )}
+            >
+              {genre.label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Smooth Animated Movie Grid */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={`${activeCategory}-${page}`}
+          key={`${activeCategory}-${selectedGenreId}-${page}`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
           <MovieGrid
-            movies={data?.results}
+            movies={currentData?.results}
             isLoading={isLoading}
             count={20}
           />
@@ -101,7 +152,7 @@ function MoviesContent() {
       </AnimatePresence>
 
       {/* Pagination Controls */}
-      {data && data.total_pages > 1 && (
+      {currentData && currentData.total_pages > 1 && (
         <div className="flex items-center justify-center gap-3 pt-6 border-t border-white/10">
           <Button
             variant="secondary"

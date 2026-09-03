@@ -50,4 +50,43 @@ describe("MovieService", () => {
     expect(apiClient.get).toHaveBeenCalledWith("/movie/550/videos");
     expect(result.results[0].key).toBe("trailerKey");
   });
+
+  it("getWatchProviders should call /movie/:id/watch/providers", async () => {
+    const mockProviders = { id: 550, results: { ID: { link: "https://tmdb.org", flatrate: [] } } };
+    (apiClient.get as any).mockResolvedValueOnce({ data: mockProviders });
+
+    const result = await MovieService.getWatchProviders(550);
+    expect(apiClient.get).toHaveBeenCalledWith("/movie/550/watch/providers");
+    expect(result.results.ID.link).toBe("https://tmdb.org");
+  });
+
+  it("discoverByGenre should call /discover/movie with with_genres parameter", async () => {
+    const mockData = { page: 1, results: [{ id: 1, title: "Action Movie" }], total_pages: 5 };
+    (apiClient.get as any).mockResolvedValueOnce({ data: mockData });
+
+    const result = await MovieService.discoverByGenre(28, 1);
+    expect(apiClient.get).toHaveBeenCalledWith("/discover/movie", {
+      params: { with_genres: 28, page: 1, sort_by: "popularity.desc" },
+    });
+    expect(result.results[0].title).toBe("Action Movie");
+  });
+
+  it("getByCategory, getTopRated, getNowPlaying, getUpcoming, getSimilar should call correct endpoints", async () => {
+    (apiClient.get as any).mockResolvedValue({ data: { page: 1, results: [] } });
+
+    await MovieService.getTopRated();
+    expect(apiClient.get).toHaveBeenCalledWith("/movie/top_rated", { params: undefined });
+
+    await MovieService.getNowPlaying();
+    expect(apiClient.get).toHaveBeenCalledWith("/movie/now_playing", { params: undefined });
+
+    await MovieService.getUpcoming();
+    expect(apiClient.get).toHaveBeenCalledWith("/movie/upcoming", { params: undefined });
+
+    await MovieService.getByCategory("top_rated");
+    expect(apiClient.get).toHaveBeenCalledWith("/movie/top_rated", { params: undefined });
+
+    await MovieService.getSimilar(550);
+    expect(apiClient.get).toHaveBeenCalledWith("/movie/550/similar", { params: undefined });
+  });
 });

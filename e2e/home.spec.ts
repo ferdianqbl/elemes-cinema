@@ -6,8 +6,8 @@ test.describe("Home Page & Discovery Flow", () => {
   });
 
   test("should render the site header and branding correctly", async ({ page }) => {
-    await expect(page).toHaveTitle(/Elemes Cinema/);
-    const brand = page.getByRole("link", { name: /ElemesCinema/i }).first();
+    await expect(page).toHaveTitle(/Elemes/);
+    const brand = page.getByRole("link", { name: /Elemes/i }).first();
     await expect(brand).toBeVisible();
   });
 

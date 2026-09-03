@@ -73,3 +73,24 @@ export interface CreditsResponse {
   cast: CastMember[];
   crew: CrewMember[];
 }
+
+export interface WatchProvider {
+  logo_path: string;
+  provider_id: number;
+  provider_name: string;
+  display_priority: number;
+}
+
+export interface WatchProvidersCountry {
+  link: string;
+  flatrate?: WatchProvider[];
+  rent?: WatchProvider[];
+  buy?: WatchProvider[];
+  free?: WatchProvider[];
+  ads?: WatchProvider[];
+}
+
+export interface WatchProvidersResponse {
+  id: number;
+  results: Record<string, WatchProvidersCountry>;
+}

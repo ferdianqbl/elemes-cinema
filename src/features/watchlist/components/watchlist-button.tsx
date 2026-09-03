@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Bookmark, Check } from "lucide-react";
+import { toast } from "sonner";
 import { useWatchlistStore, WatchlistItem } from "@/store/use-watchlist-store";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +25,34 @@ export function WatchlistButton({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const wasInWatchlist = isInWatchlist;
     toggleItem(item);
+
+    const title = item.title || "Title";
+
+    if (!wasInWatchlist) {
+      toast.success(`Added "${title}" to Watchlist`, {
+        description: "Saved to your persistent watchlist.",
+        action: {
+          label: "Undo",
+          onClick: () => {
+            toggleItem(item);
+          },
+        },
+        duration: 4000,
+      });
+    } else {
+      toast.info(`Removed "${title}" from Watchlist`, {
+        action: {
+          label: "Undo",
+          onClick: () => {
+            toggleItem(item);
+          },
+        },
+        duration: 4000,
+      });
+    }
   };
 
   if (variant === "full") {

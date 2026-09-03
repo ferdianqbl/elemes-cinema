@@ -25,8 +25,11 @@ export default function HomePage() {
   const { data: popularPeopleData, isLoading: isPopularPeopleLoading } =
     usePopularPeople({ page: 1 });
 
-  const featuredMovie =
-    nowPlayingData?.results?.[0] || popularMoviesData?.results?.[0];
+  const premiereMovies = (
+    nowPlayingData?.results && nowPlayingData.results.length > 0
+      ? nowPlayingData.results
+      : popularMoviesData?.results || []
+  ).slice(0, 5);
   const popularMovies = (popularMoviesData?.results || []).slice(0, 10);
   const widescreenTvShows = (popularTvData?.results || []).slice(0, 6);
   const popularPeople = (popularPeopleData?.results || []).slice(0, 6);
@@ -41,7 +44,7 @@ export default function HomePage() {
           className="-top-20 -bottom-20"
         />
         <MovieHero
-          movie={featuredMovie}
+          movies={premiereMovies}
           isLoading={isNowPlayingLoading && isPopularMoviesLoading}
         />
       </section>

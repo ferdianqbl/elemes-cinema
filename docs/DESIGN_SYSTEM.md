@@ -1,9 +1,9 @@
-# Elemes Cinema Design System (ECDS) — "Midnight Cyan"
+# Elemes Design System (EDS) — "Midnight Cyan"
 
 > **Design Metaphor:** *Cinema theater at midnight. Deep obsidian canvas, glowing full-bleed film artwork, and electric cyan neon accents powering every interaction.*
 
 **Theme:** Dark Mode First (Midnight Cinema)  
-**Version:** 1.2.0  
+**Version:** 1.3.0  
 **Status:** Canonical Design Standard  
 **Document Path:** `workspace/docs/DESIGN_SYSTEM.md`  
 
@@ -11,14 +11,14 @@
 
 ## 1. Design Philosophy & Core Principles
 
-Inspired by the **HBO Max and Apple TV+ cinema-dark architecture**, the **Elemes Cinema Design System (ECDS)** is engineered specifically for film and television catalog discovery.
+Inspired by modern **cinema-dark architectures (Apple TV+ / Letterboxd Pro / HBO Max)**, the **Elemes Design System (EDS)** is engineered specifically for film and television catalog discovery.
 
 1. **Artwork is the Hero:** The page background is pure black (`#000000`), allowing movie posters and backdrop stills to glow with maximum visual saturation without UI clutter.
 2. **Single Electric Accent (Electric Cyan):** Rather than scattering multiple competing colors, a single **Electric Cyan (`#00E5FF` / `#22D3EE`)** accent powers all primary buttons, active tabs, focus rings, and interactive focal points.
 3. **Contrast-Driven Elevation:** Depth is created exclusively through surface contrast shifts (Obsidian `#000000` $\to$ Abyss `#07090E` $\to$ Snow `#FFFFFF` / Cyan `#00E5FF`) and hairline borders (`border-white/10`).
 4. **Fluid Spring Motion:** State changes, active category pill transfers, and mobile dock indicators rely on physical spring animations (`motion.span layoutId`) rather than abrupt cuts or static CSS transitions.
-5. **Native Mobile Ergonomics:** On handheld devices, thumb-reach navigation is prioritized with a frosted-glass bottom dock (`<MobileTabBar />`), safe-area inset protection, and tactile tap feedback (`active:scale-90`).
-6. **Strict Geometric Radii Discipline:** Exact three-tier radius scale ($8\text{px}$ cards/buttons, $100\text{px}$ pills, $4\text{px}$ tags) with zero intermediate radius variations.
+5. **Native Mobile Ergonomics:** On handheld devices, thumb-reach navigation is prioritized with a frosted-glass bottom dock (`<MobileTabBar />`), safe-area inset protection, and tactile tap feedback (`active:scale-95`).
+6. **Reversible Micro-Interactions:** Transient actions (e.g. watchlist toggles) provide instant, reassuring feedback through dark-mode Sonner toasts with integrated "Undo" buttons.
 
 ---
 
@@ -58,102 +58,41 @@ Inspired by the **HBO Max and Apple TV+ cinema-dark architecture**, the **Elemes
 
 ---
 
-## 3. Typography & Marquee Tracking
+## 3. Core Component Library Specifications
 
-### Font Family
-- **Primary Font:** `Geist` (with fallback to `Inter`, `Helvetica Neue`, `sans-serif`) loaded via Next.js Font Optimization (`--font-sans`).
-- **Tabular Figures (`tnum`):** OpenType numeric alignment enabled for ratings, durations, budgets, and release years.
+### 3.1 Multi-Slide Featured Hero Carousel (`<MovieHero />`)
+- **Aspect Ratios:** Responsive aspect ratio scaling (`aspect-[4/3]` mobile $\to$ `aspect-[16/8]` tablet $\to$ `aspect-[21/9]` desktop).
+- **Cross-Fade Transitions:** Seamless motion cross-fading powered by `<AnimatePresence>` and `motion.div`.
+- **Navigation Controls:** Left/Right chevron pills appear smoothly on desktop hover.
+- **Micro-Pagination Dots:** Glassmorphic pill container at bottom right displaying slide status (`w-6 bg-cyan-400` active bar, `w-1.5 bg-white/30` inactive dots).
 
-### Type Scale & Hierarchy
+### 3.2 Where to Watch Streaming Badges (`<WatchProviders />`)
+- **Surface:** Obsidian box with hairline white border (`bg-[#07090E] border border-white/10 p-4 sm:p-5 rounded-xl`).
+- **Provider Tile:** `h-9 w-9 sm:h-10 sm:w-10 rounded-lg border border-white/15 bg-black` with smooth hover zoom (`hover:scale-105 hover:border-cyan-400`).
+- **Accessible Tooltips:** Native base-ui tooltip displaying provider brand name.
+- **Provider Attribution:** Subtle JustWatch link with external icon.
 
-| Role | Font Size | Weight | Line Height | Letter Spacing | CSS Utility |
-|---|---|---|---|---|---|
-| **Hero Display** | $48\text{px} - 56\text{px}$ | 300 (Light) / 400 | $1.05$ | $-0.02\text{em}$ | `text-4xl md:text-5xl font-light tracking-tight` |
-| **Section Heading** | $24\text{px} - 32\text{px}$ | 400 (Regular) | $1.15$ | $-0.01\text{em}$ | `text-2xl md:text-3xl font-normal tracking-tight` |
-| **Card Title** | $14\text{px} - 16\text{px}$ | 600 (Semibold) | $1.25$ | $0$ | `text-sm md:text-base font-semibold text-white` |
-| **Body / Synopsis**| $14\text{px}$ | 400 (Regular) | $1.50$ | $0$ | `text-sm text-slate-300 leading-relaxed` |
-| **Marquee Eyebrow**| $11\text{px} - 12\text{px}$ | 600 (Semibold) | $1.20$ | $+0.08\text{em}$ (Wide) | `text-xs uppercase font-semibold tracking-wider text-cyan-400` |
-| **Metadata Tag** | $10\text{px} - 11\text{px}$ | 500 (Medium) | $1.10$ | $+0.05\text{em}$ | `text-[11px] font-medium text-slate-400` |
+### 3.3 Quick Genre Filter Chips
+- **Layout:** Horizontal momentum swipe shelf (`overflow-x-auto no-scrollbar scroll-smooth`).
+- **Active State:** Glowing Cyan pill (`bg-cyan-950/80 text-cyan-400 border border-cyan-500/40 font-semibold shadow-sm`).
+- **Inactive State:** Translucent neutral pill (`bg-white/[0.04] text-slate-400 hover:text-white border border-white/10`).
 
----
+### 3.4 Toast Feedback Stack (Sonner)
+- **Position:** `bottom-right` desktop, bottom center above dock mobile.
+- **Palette:** Dark glass surface with crisp white text.
+- **Interactive Action:** High-contrast `[Undo]` button allowing users to effortlessly reverse accidental watchlist clicks within 4 seconds.
 
-## 4. Spacing, Shapes & Radii Discipline
-
-### Geometric Radii Rule
-No arbitrary intermediate border-radius values are permitted. Only three specific radius tiers exist:
-
-```
-┌────────────────────────────────────────────────────────┐
-│  Tags & Badges:      4px      (rounded-[4px])          │
-│  Cards & Buttons:    8px      (rounded-lg / rounded-md)│
-│  Pills & Toggles:    100px    (rounded-full)           │
-└────────────────────────────────────────────────────────┘
-```
-
-1. **Micro Elements ($4\text{px}$):** Category tags, metadata badges, year indicators (`rounded-[4px]`).
-2. **Structural Elements ($8\text{px}$):** Primary CTA buttons, Movie cards, TV cards, Person cards, Poster thumbnails, Input boxes, Modal containers (`rounded-lg`).
-3. **Pills & Circular Icons ($100\text{px}$):** Watchlist circular buttons, Navigation category pills, Search triggers (`rounded-full`).
+### 3.5 Minimalist Cinema Footer (`<Footer />`)
+- **Layout:** Clean, 2-row layout with zero visual clutter.
+- **Row 1:** Shortened brand logo ("Elemes") and inline catalog navigation links (Home, Movies, TV Shows, Watchlist).
+- **Row 2:** TMDB attribution disclaimer and copyright.
 
 ---
 
-## 5. Animation & Motion Standards (`motion/react`)
+## 4. Mobile Ergonomics & Native App Bar (`<MobileTabBar />`)
 
-### 5.1 Active Category Spring Indicator
-Category tabs utilize hardware-accelerated spring animations for fluid transitions:
-```tsx
-<motion.span
-  layoutId="activeMovieTabIndicator"
-  className="absolute inset-0 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/30"
-  transition={{ type: "spring", stiffness: 450, damping: 35 }}
-/>
-```
-
-### 5.2 Card Grid Cross-Fade Transitions
-When switching categories, the movie/TV grid smoothly fades and shifts:
-```tsx
-<AnimatePresence mode="wait">
-  <motion.div
-    key={activeCategory}
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -10 }}
-    transition={{ duration: 0.25, ease: "easeInOut" }}
-  >
-    <MovieGrid movies={movies} />
-  </motion.div>
-</AnimatePresence>
-```
-
----
-
-## 6. Native Mobile App Components
-
-### 6.1 Fixed Bottom Dock (`<MobileTabBar />`)
-- **Container:** `fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/92 backdrop-blur-2xl border-t border-white/10`.
-- **Safe Area Inset:** `pb-[max(env(safe-area-inset-bottom,0px),8px)]`.
-- **Tactile Feedback:** `active:scale-90 transition-transform`.
-- **Active Indicator:** Glowing cyan top-line indicator (`layoutId="mobileTabIndicator"`).
-- **Badge Counter:** Live cyan counter badge on the Watchlist tab.
-
-### 6.2 Mobile Horizontal Scroll Shelves
-- **Pill Container:** `flex items-center gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10 w-full overflow-x-auto no-scrollbar scroll-smooth flex-nowrap shrink-0`.
-- **Pills:** `shrink-0 whitespace-nowrap active:scale-95`.
-
----
-
-## 7. Do's and Don'ts
-
-### ✅ DO
-- Use `#000000` as the absolute base page canvas.
-- Use **Electric Cyan (`#00E5FF`)** as the single primary accent color across all interactive buttons and active states.
-- Maintain wide positive letter-spacing (`tracking-wider` / `+0.08em`) on all uppercase small labels and badges.
-- Keep card radius strictly at $8\text{px}$ and pills strictly at `rounded-full`.
-- Use hairline borders (`border-white/10` or `border-cyan-500/20`) to define separation without muddy artificial shadows.
-- Add `active:scale-90` / `active:scale-95` on touch interactions for a responsive native feel.
-
-### ❌ DON'T
-- Never use heavy drop shadows (`shadow-2xl` with black blurs) — let contrast provide elevation.
-- Never mix arbitrary corner radii (e.g. $6\text{px}$, $14\text{px}$, $20\text{px}$).
-- Do not introduce multiple saturated rainbow accent colors on the same screen.
-- Do not allow category switchers to wrap onto 2-3 vertical lines on mobile devices.
-- Do not use gray/washed-out canvas backgrounds (`#1f2937`) — stick to deep Obsidian `#000000`.
+On viewports below 768px (`md`), standard desktop top headers are supplemented with a native-style bottom bar:
+- **Mounting Position:** `fixed bottom-0 left-0 right-0 z-50` with glassmorphic backdrop (`bg-black/90 backdrop-blur-xl border-t border-white/10`).
+- **Safe Area Inset:** `pb-[max(env(safe-area-inset-bottom),8px)]` padding prevents overlaps with system gestures.
+- **Touch Feedback:** `active:scale-95` on every button with clear 24px Lucide icons.
+- **Live Watchlist Counter:** Floating miniature badge showing realtime saved items.

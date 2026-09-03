@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios";
 import { PaginationParams, TMDBResponse } from "@/types/api.types";
-import { CreditsResponse, VideoResponse } from "@/types/common.types";
+import { CreditsResponse, VideoResponse, WatchProvidersResponse } from "@/types/common.types";
 import { TTvShow, TTvShowDetail, TvCategory } from "../types/tv.types";
 
 export const TvService = {
@@ -69,6 +69,29 @@ export const TvService = {
   ): Promise<TMDBResponse<TTvShow>> => {
     const response = await apiClient.get<TMDBResponse<TTvShow>>(`/tv/${tvId}/similar`, {
       params,
+    });
+    return response.data;
+  },
+
+  getWatchProviders: async (
+    tvId: number | string
+  ): Promise<WatchProvidersResponse> => {
+    const response = await apiClient.get<WatchProvidersResponse>(
+      `/tv/${tvId}/watch/providers`
+    );
+    return response.data;
+  },
+
+  discoverByGenre: async (
+    genreId: number,
+    page: number = 1
+  ): Promise<TMDBResponse<TTvShow>> => {
+    const response = await apiClient.get<TMDBResponse<TTvShow>>("/discover/tv", {
+      params: {
+        with_genres: genreId,
+        page,
+        sort_by: "popularity.desc",
+      },
     });
     return response.data;
   },

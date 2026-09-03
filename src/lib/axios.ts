@@ -31,9 +31,36 @@ apiClient.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error)
 );
 
+interface CustomRequestConfig extends InternalAxiosRequestConfig {
+  __retryCount?: number;
+}
+
+const MAX_RETRIES = 2;
+const RETRYABLE_STATUS_CODES = [429, 500, 502, 503, 504];
+
 apiClient.interceptors.response.use(
   (response) => response,
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
+    const config = error.config as CustomRequestConfig | undefined;
+
+    // Retry only idempotent GET requests on network errors or transient HTTP status codes
+    const isGet = !config?.method || config.method.toUpperCase() === "GET";
+    const status = error.response?.status;
+    const isRetryable = !status || RETRYABLE_STATUS_CODES.includes(status);
+
+    if (config && isGet && isRetryable) {
+      config.__retryCount = config.__retryCount || 0;
+
+      if (config.__retryCount < MAX_RETRIES) {
+        config.__retryCount += 1;
+        const delay =
+          Math.pow(2, config.__retryCount) * 500 + Math.random() * 150;
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        return apiClient(config);
+      }
+    }
+
     if (error.response) {
       console.error(
         `[TMDB API Error] ${error.response.status}:`,

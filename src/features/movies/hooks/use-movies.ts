@@ -16,6 +16,10 @@ export const movieKeys = {
   videos: (id: number | string) => [...movieKeys.all, "videos", id] as const,
   similar: (id: number | string, params?: PaginationParams) =>
     [...movieKeys.all, "similar", id, params] as const,
+  watchProviders: (id: number | string) =>
+    [...movieKeys.all, "watchProviders", id] as const,
+  byGenre: (genreId: number, page?: number) =>
+    [...movieKeys.all, "genre", genreId, page] as const,
 };
 
 export function usePopularMovies(params?: PaginationParams) {
@@ -82,5 +86,21 @@ export function useSimilarMovies(movieId: number | string, params?: PaginationPa
     queryKey: movieKeys.similar(movieId, params),
     queryFn: () => MovieService.getSimilar(movieId, params),
     enabled: Boolean(movieId),
+  });
+}
+
+export function useMovieWatchProviders(movieId: number | string) {
+  return useQuery({
+    queryKey: movieKeys.watchProviders(movieId),
+    queryFn: () => MovieService.getWatchProviders(movieId),
+    enabled: Boolean(movieId),
+  });
+}
+
+export function useMoviesByGenre(genreId?: number, page: number = 1) {
+  return useQuery({
+    queryKey: movieKeys.byGenre(genreId || 0, page),
+    queryFn: () => MovieService.discoverByGenre(genreId!, page),
+    enabled: Boolean(genreId),
   });
 }

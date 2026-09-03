@@ -32,6 +32,7 @@ export const metadata: Metadata = {
 };
 
 import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -52,6 +53,13 @@ export default function RootLayout({
             <Footer />
             <MobileTabBar />
             <SearchModal />
+            <Toaster
+              theme="dark"
+              position="bottom-right"
+              toastOptions={{
+                className: "bg-[#07090E] border border-white/15 text-white shadow-2xl",
+              }}
+            />
           </TooltipProvider>
         </QueryProvider>
       </body>

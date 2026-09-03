@@ -1,10 +1,10 @@
 # Architecture & Technical Blueprint
 
-**Project:** Elemes Cinema — Movie & TV Show Catalog Web App  
+**Project:** Elemes — Movie & TV Show Catalog Web App  
 **Architecture Pattern:** Feature-Driven Domain Modular Architecture  
 **Target Platform:** Next.js 16 (App Router) + React 19 + TypeScript  
 **Design System:** Tailwind CSS v4 + shadcn/ui + Motion  
-**Version:** 1.2.0  
+**Version:** 1.3.0  
 
 ---
 
@@ -17,9 +17,10 @@ The application follows the **Feature-Driven Modular Architecture** (inspired by
 2. **Server-Client Hybrid Pattern:** Next.js App Router layout and pages orchestrate client interactive hooks with SSR optimization.
 3. **URL-Synchronized State:** Deeply linkable category states via query strings (`?category=...`), guarded by `<Suspense>` boundaries to preserve static optimization.
 4. **Deterministic Query Keys:** Centralized query key factories ensuring zero cache collisions and predictable invalidations.
-5. **Resilient HTTP Interceptors:** Axios client with token fallback and uniform error trapping.
+5. **Resilient HTTP Interceptors:** Axios client with token fallback and automatic **Exponential Backoff & Jitter** retry for 429 rate limits and 5xx server errors.
 6. **Zero-Friction Local State:** Zustand store with transparent `localStorage` serialization, hydration guards, and zero-flash skeleton loaders.
-7. **Native-Grade Mobile Ergonomics:** Bottom dock navigation (`<MobileTabBar />`), safe-area insets, touch-scrollable shelves, and haptic tap micro-interactions.
+7. **Reversible User Interactions:** Sonner toast notification stack with an "Undo" action on watchlist state modifications.
+8. **Native-Grade Mobile Ergonomics:** Bottom dock navigation (`<MobileTabBar />`), safe-area insets, touch-scrollable shelves, and haptic tap micro-interactions.
 
 ---
 
@@ -40,16 +41,16 @@ The application follows the **Feature-Driven Modular Architecture** (inspired by
  └──────────────┘      └───────┬──────┘        └──────────────┘
                                │
                                ▼
-                       ┌──────────────┐
-                       │ Axios Client │
-                       │ (TMDB Auth)  │
-                       └───────┬──────┘
+                        ┌──────────────┐
+                        │ Axios Client │
+                        │(Auth & Retry)│
+                        └───────┬──────┘
                                │
                                ▼
-                       ┌──────────────┐
-                       │   TMDB API   │
-                       │ (Remote REST)│
-                       └──────────────┘
+                        ┌──────────────┐
+                        │   TMDB API   │
+                        │(17 Endpoints)│
+                        └──────────────┘
 ```
 
 | Layer | Technology | Purpose & Rationale |
@@ -58,10 +59,11 @@ The application follows the **Feature-Driven Modular Architecture** (inspired by
 | **UI Library** | React 19 | Modern React architecture with improved hydration, transitions, and concurrent rendering. |
 | **Language** | TypeScript 5 (Strict) | Compile-time type safety, exhaustive interfaces for all TMDB entities, eliminating runtime `undefined` bugs. |
 | **Styling** | Tailwind CSS v4 | Cutting-edge CSS engine (`@theme inline`), zero-runtime CSS footprint, and dark cinema theme variables. |
-| **Component Kit** | shadcn/ui (Base UI) | Accessible, unstyled primitives customized for cinema UI (Dialog, NavigationMenu, Drawer, Button, Badge, Skeleton). |
-| **Animations** | Motion (`motion/react`) | Fluid spring physics layout animations (`layoutId="activeMovieTabIndicator"`), cross-fades, and mobile indicators. |
+| **Component Kit** | shadcn/ui (Base UI) | Accessible, unstyled primitives customized for cinema UI (Dialog, NavigationMenu, Drawer, Button, Badge, Skeleton, Tooltip). |
+| **Animations** | Motion (`motion/react`) | Fluid spring physics layout animations (`layoutId="activeMovieTabIndicator"`), cross-fades, and carousel transitions. |
+| **Toasts** | Sonner | Performant dark-themed toast notifications with integrated action buttons. |
 | **Data Fetching** | TanStack React Query v5 | Automatic background refetching, 5-minute stale-time caching, window focus controls, and query devtools. |
-| **HTTP Client** | Axios | Request/Response interceptors for Bearer Token (`v4`) / API Key (`v3`) injection and unified logging. |
+| **HTTP Client** | Axios | Request interceptor for Bearer Token / API Key injection and response interceptor for exponential backoff retries. |
 | **Client State** | Zustand v5 + `persist` | Lightweight global state for watchlists (stored in `localStorage`) and UI modal toggles without context re-render overhead. |
 | **Iconography** | Lucide React | Clean, ultra-light line icons matching modern streaming aesthetic. |
 
@@ -75,7 +77,7 @@ workspace/
 │   ├── PRD.md                             # Product Requirements Document
 │   ├── ARCHITECTURE.md                    # This architecture document
 │   ├── API_DOCUMENTATION.md               # TMDB API Integration & Endpoints Reference
-│   ├── DESIGN_SYSTEM.md                   # Elemes Cinema Design System (Midnight Cyan)
+│   ├── DESIGN_SYSTEM.md                   # Elemes Design System (Midnight Cyan)
 │   └── FEATURE_VALIDATIONS.md             # Quality assurance and validation guide
 ├── e2e/                                   # Playwright End-to-End Test Suite (26 tests)
 │   ├── home.spec.ts                       # Home, discovery shelves, & mobile bottom nav tests
@@ -86,15 +88,15 @@ workspace/
 ├── public/                                # Public static assets & default placeholders
 ├── src/
 │   ├── app/                               # Next.js App Router Route Tree
-│   │   ├── layout.tsx                     # Global Root Layout (QueryProvider, Nav, MobileTabBar, Footer)
+│   │   ├── layout.tsx                     # Global Root Layout (QueryProvider, Nav, MobileTabBar, Toaster, Footer)
 │   │   ├── globals.css                    # Tailwind v4 theme variables, .no-scrollbar & base styles
-│   │   ├── page.tsx                       # Home page (Hero, curated shelves)
+│   │   ├── page.tsx                       # Home page (Premiere Carousel, curated shelves)
 │   │   ├── movies/
-│   │   │   ├── page.tsx                   # Movies Catalog (URL query tabs, spring indicator & pagination)
-│   │   │   └── [id]/page.tsx              # Movie Details (cinematic backdrop, floating poster, facts grid)
+│   │   │   ├── page.tsx                   # Movies Catalog (URL query tabs, genre chips, spring indicator & pagination)
+│   │   │   └── [id]/page.tsx              # Movie Details (cinematic backdrop, floating poster, facts grid, watch providers)
 │   │   ├── tv/
-│   │   │   ├── page.tsx                   # TV Shows Catalog (URL query tabs, spring indicator & pagination)
-│   │   │   └── [id]/page.tsx              # TV Show Details (seasons, episodes, cast, studios)
+│   │   │   ├── page.tsx                   # TV Shows Catalog (URL query tabs, genre chips, spring indicator & pagination)
+│   │   │   └── [id]/page.tsx              # TV Show Details (seasons, episodes, cast, watch providers)
 │   │   ├── people/
 │   │   │   ├── page.tsx                   # Trending celebrities gallery
 │   │   │   └── [id]/page.tsx              # Actor profile, biography, & filmography
@@ -108,105 +110,93 @@ workspace/
 │   │   └── not-found.tsx                  # 404 page
 │   │
 │   ├── components/                        # Shared UI Components
-│   │   ├── ui/                            # shadcn/ui primitives (button, badge, dialog, drawer, skeleton)
+│   │   ├── ui/                            # shadcn/ui primitives + watch-providers.tsx, rating-badge.tsx
 │   │   └── layout/                        # Layout chrome (navbar, mobile-tab-bar, footer, section-header)
 │   │
 │   ├── features/                          # Feature Domain Modules (aruSaku pattern)
 │   │   ├── movies/
 │   │   │   ├── components/                # movie-card.tsx, movie-grid.tsx, movie-hero.tsx
-│   │   │   ├── hooks/use-movies.ts        # usePopularMovies, useMovieDetails, etc.
-│   │   │   ├── services/movie.service.ts  # Axios API calls to TMDB movie routes
+│   │   │   ├── hooks/use-movies.ts        # usePopularMovies, useMovieDetails, useMovieWatchProviders, useMoviesByGenre
+│   │   │   ├── services/movie.service.ts  # Axios API calls to TMDB movie routes (including providers & discover)
 │   │   │   └── types/movie.types.ts       # TMovie, TMovieDetail, MovieCategory
-│   │   │
 │   │   ├── tv/
 │   │   │   ├── components/                # tv-card.tsx, tv-grid.tsx, tv-widescreen-card.tsx
-│   │   │   ├── hooks/use-tv.ts            # usePopularTv, useTvDetail, etc.
-│   │   │   ├── services/tv.service.ts     # Axios API calls to TMDB TV routes
+│   │   │   ├── hooks/use-tv.ts            # usePopularTv, useTvDetail, useTvWatchProviders, useTvByGenre
+│   │   │   ├── services/tv.service.ts     # Axios API calls to TMDB TV routes (including providers & discover)
 │   │   │   └── types/tv.types.ts          # TTvShow, TTvShowDetail, TvCategory
-│   │   │
-│   │   ├── people/
-│   │   │   ├── components/                # person-card.tsx
-│   │   │   ├── hooks/use-people.ts        # usePopularPeople, usePersonDetail, usePersonCombinedCredits
-│   │   │   ├── services/people.service.ts # Axios API calls to TMDB people routes
-│   │   │   └── types/people.types.ts      # TPerson, TPersonDetail, PersonCombinedCredits
-│   │   │
-│   │   ├── search/
-│   │   │   ├── components/search-modal.tsx# Quick ⌘K command palette modal
-│   │   │   ├── hooks/use-search.ts        # useMultiSearch
-│   │   │   ├── services/search.service.ts # Axios calls for TMDB multi-search
-│   │   │   └── types/search.types.ts      # SearchResultItem, SearchParams
-│   │   │
-│   │   └── watchlist/
-│   │       ├── components/                # watchlist-button.tsx, watchlist-view.tsx (with WatchlistSkeleton)
-│   │       └── store/                     # (points to use-watchlist-store.ts)
+│   │   ├── people/                        # Popular stars and filmography
+│   │   ├── search/                        # Multi-search service and dialog
+│   │   └── watchlist/                     # Watchlist button with toast & undo, metrics analytics view
 │   │
-│   ├── lib/                               # Core Infrastructure Utilities
-│   │   ├── analytics.ts                   # Cinephile analytics calculator (watch-time, ratings, counts)
-│   │   ├── axios.ts                       # Configured Axios instance with interceptors
-│   │   ├── tmdb.ts                        # TMDB image sizing & video URL builders
-│   │   ├── constants.ts                   # Navigation links, genres dictionary, categories
-│   │   └── utils.ts                       # cn() class merger, currency, date, runtime formatters
-│   │
-│   ├── providers/                         # Context Providers
-│   │   └── query-provider.tsx             # TanStack Query Client with 5m stale-time
-│   │
-│   ├── store/                             # Global Zustand Stores
+│   ├── lib/                               # Global Utilities & Clients
+│   │   ├── axios.ts                       # Axios client with auth interceptor and exponential backoff retry
+│   │   ├── constants.ts                   # Navigation routes, categories, and site constants
+│   │   ├── tmdb.ts                        # TMDB image URL resolution and YouTube embed helpers
+│   │   └── utils.ts                       # Currency, date, runtime formatters and cn helper
+│   ├── store/                             # Global Client Stores (Zustand)
 │   │   ├── use-watchlist-store.ts         # Persistent watchlist store with LocalStorage sync
-│   │   └── use-ui-store.ts                # Search modal state
-│   │
-│   └── types/                             # Global Cross-Cutting Type Definitions
-│       ├── api.types.ts                   # TMDBResponse<T>, PaginationParams, TMDBErrorResponse
-│       └── common.types.ts                # MediaType, Genre, CreditsResponse, VideoResponse
-│
-├── .env.example                           # Environment variable schema
-├── .env.local                             # Local secrets (gitignored)
-├── components.json                        # shadcn/ui configuration file
-├── next.config.ts                         # Next.js image domain configuration
-├── package.json                           # Dependencies & scripts
-├── postcss.config.mjs                     # Tailwind v4 PostCSS plugin
-└── tsconfig.json                          # TypeScript configuration with @/* path aliases
+│   │   └── use-ui-store.ts                # Search modal and mobile drawer toggles
+│   └── types/                             # TypeScript Type Definitions
 ```
 
 ---
 
-## 4. Key Subsystem Architectures
+## 4. Key Architectural Patterns & Decisions
 
-### 4.1 URL Query Synchronization Pattern
-To enable deep linking, browser bookmarking, and seamless navigation from both top dropdown menus and mobile drawer shortcuts, category states are bound directly to the URL:
-- Route: `/movies?category=now_playing` or `/tv?category=top_rated`
-- Next.js Suspense Guard: Reading `useSearchParams()` inside client pages is wrapped within `<Suspense fallback={<PageSkeleton />}>` to avoid de-optimizing the route.
-- Active Indicator Spring Animation: When the query parameter updates, `motion.span` with `layoutId` calculates layout deltas and animates the active pill with spring physics.
+### 4.1 Resilient Network Layer (Exponential Backoff & Jitter)
+Idempotent GET requests in `src/lib/axios.ts` catch HTTP 429 (Rate Limit) and 5xx (Server Error) responses:
+```typescript
+const baseDelay = 1000 * Math.pow(2, config._retryCount - 1);
+const jitter = Math.random() * 250;
+await new Promise((resolve) => setTimeout(resolve, baseDelay + jitter));
+return apiClient(config);
+```
+This protects user experiences against temporary TMDB service hiccups or rate limiting spikes.
 
-### 4.2 Native Mobile App Architecture (`<MobileTabBar />`)
-Mobile users receive a dedicated thumb-reachable dock:
-- Dock Mounting: Rendered in root layout with `fixed bottom-0 z-50 md:hidden`.
+### 4.2 Multi-Slide Premiere Hero Carousel (`<MovieHero />`)
+- **Stateful Slides:** Accepts an array of top premiere titles (`TMovie[]`).
+- **Smooth Auto-Rotation:** 7-second timer with automatic pause on mouse hover.
+- **Hardware-Accelerated Transitions:** Powered by `<AnimatePresence>` and `motion.div` for buttery cross-fade transitions.
+- **Micro-Pagination:** Bottom-right interactive dot indicators and hover side chevrons for desktop discovery.
+
+### 4.3 Where to Watch Streaming Providers (`<WatchProviders />`)
+- Queries TMDB's official `/watch/providers` API.
+- Prioritizes Indonesian region (`ID`), falling back to `US` or first available country code.
+- Displays subscription platforms (Netflix, Disney+, Prime Video, Apple TV) with crisp rounded badges and accessible tooltips.
+- Provides an external deep link to JustWatch.
+
+### 4.4 Quick Genre Discovery Shelf
+- Sits seamlessly below the category tabs on `/movies` and `/tv`.
+- Allows instant genre filtering (`/discover/movie?with_genres=...`) without losing navigation context.
+- Styled as a smooth, horizontal swipeable shelf (`no-scrollbar`).
+
+### 4.5 Native Mobile App Architecture (`<MobileTabBar />`)
+- Rendered in root layout with `fixed bottom-0 z-50 md:hidden`.
 - Safe Area Handling: `pb-[max(env(safe-area-inset-bottom),8px)]` ensures seamless presentation on modern iPhones and Android devices.
 - Layout Spacing: `<main>` incorporates `pb-24 md:pb-8` to guarantee zero overlap with scrollable content, cards, and pagination buttons.
-- Touch Shelves: Category filters on mobile use `.no-scrollbar` with momentum swipe scrolling (`overflow-x-auto`) rather than wrapping onto multiple vertical lines.
-
-### 4.3 Watchlist Hydration & State Strategy
-- Hydration Guard: Zustand's `persist` middleware deserializes asynchronous browser `localStorage`. To prevent premature flashes of "Your Watchlist is empty", a `WatchlistSkeleton` renders while `!hasHydrated`.
-- Architectural Isolation: Client storage ensures 100% private data isolation per user without requiring TMDB's 3-legged OAuth authentication flow (which would introduce insurmountable friction for tech test evaluators).
+- Touch Shelves: Category and genre filters on mobile use `.no-scrollbar` with momentum swipe scrolling (`overflow-x-auto`).
 
 ---
 
-## 5. Performance & Web Vitals Optimization
+## 5. Testing & Code Quality Blueprint
 
-1. **Next.js Image Optimization (`next/image`):**
-   - Explicit responsive `sizes` attribute applied across all `fill` images.
-   - Hero and detail headers utilize `loading="eager"` and `priority` to eliminate LCP runtime warnings.
-2. **TanStack Query Caching:**
-   - `staleTime: 1000 * 60 * 5` (5 minutes) prevents redundant network roundtrips.
-   - `gcTime: 1000 * 60 * 30` (30 minutes) retains unused query cache in memory.
-   - `refetchOnWindowFocus: false` avoids disruptive background re-fetching.
-3. **Debounced Multi-Search:**
-   - 350ms debounce with 2-character threshold minimizes TMDB API quota consumption.
-4. **Bundle Performance:**
-   - Production build compiles under 2 seconds with Turbopack, isolating shared JS chunks for rapid First Contentful Paint.
+### Code Coverage Metrics (Vitest v8)
+```
+% Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Status
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   92.21 |    83.33 |   90.32 |   92.21 | PASSED (>90%)
+ components/layout |     100 |      100 |     100 |     100 | PASSED
+ components/ui     |   78.33 |    59.09 |     100 |   78.33 | PASSED
+ movies/services   |     100 |      100 |     100 |     100 | PASSED
+ people/services   |     100 |      100 |     100 |     100 | PASSED
+ tv/services       |   94.04 |      100 |    90.9 |   94.04 | PASSED
+ hooks             |     100 |      100 |     100 |     100 | PASSED
+ lib               |   98.28 |       90 |    92.3 |   98.28 | PASSED
+ store             |   95.83 |       90 |     100 |   95.83 | PASSED
+-------------------|---------|----------|---------|---------|-------------------
+```
 
----
-
-## 6. Testing Strategy
-
-- **Vitest Unit Suite:** **45 passing tests** verifying formatters, analytics math, TMDB URL builders, debounce hooks, rating badges, and Zustand state mutations.
+- **Vitest Unit Suite:** **64 passing tests** across 14 test suites verifying formatters, analytics, TMDB URL builders, debounce hooks, rating badges, watch providers, footer, and Zustand state mutations.
 - **Playwright E2E Suite:** **26 passing tests** across Chromium Desktop and Mobile Chrome simulating realistic user discovery, query navigation, and watchlist persistence.
