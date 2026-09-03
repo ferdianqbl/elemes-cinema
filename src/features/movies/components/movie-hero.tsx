@@ -34,6 +34,7 @@ export function MovieHero({ movie, isLoading }: MovieHeroProps) {
         fill
         sizes="100vw"
         priority
+        loading="eager"
         className="object-cover object-top opacity-55"
         unoptimized={backdropUrl.startsWith("/placeholder")}
       />

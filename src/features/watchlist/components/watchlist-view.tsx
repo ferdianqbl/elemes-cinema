@@ -336,6 +336,7 @@ export function WatchlistView() {
                       src={posterUrl}
                       alt={item.title}
                       fill
+                      sizes="48px"
                       className="object-cover"
                       unoptimized={posterUrl.startsWith("/placeholder")}
                     />

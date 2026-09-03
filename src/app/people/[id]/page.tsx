@@ -82,6 +82,7 @@ export default function PersonDetailPage({ params }: PersonDetailPageProps) {
               alt={person.name}
               fill
               priority
+              loading="eager"
               sizes="(max-width: 768px) 176px, 256px"
               className="object-cover"
               unoptimized={profileUrl.startsWith("/placeholder")}

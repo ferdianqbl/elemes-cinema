@@ -131,6 +131,7 @@ export function SearchModal() {
                         src={imageUrl}
                         alt={title}
                         fill
+                        sizes="36px"
                         className="object-cover"
                         unoptimized={imageUrl.startsWith("/placeholder")}
                       />
