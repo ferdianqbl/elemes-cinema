@@ -1,4 +1,3 @@
-import { MediaType } from "@/types/common.types";
 import { TMovie } from "@/features/movies/types/movie.types";
 import { TTvShow } from "@/features/tv/types/tv.types";
 import { TPerson } from "@/features/people/types/people.types";
