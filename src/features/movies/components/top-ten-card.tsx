@@ -17,22 +17,22 @@ export function TopTenCard({ movie, rank }: TopTenCardProps) {
   const formattedRank = rank < 10 ? `0${rank}` : `${rank}`;
 
   return (
-    <div className="group relative flex items-end shrink-0 select-none">
+    <div className="group relative flex items-end select-none w-full min-w-0">
       {/* Giant Stylized Rank Number */}
-      <div className="font-marquee-number text-7xl sm:text-8xl lg:text-9xl font-black -mr-4 sm:-mr-6 z-10 select-none pointer-events-none transition-transform duration-500 group-hover:scale-105 group-hover:-translate-x-1">
+      <div className="font-marquee-number text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black -mr-3 sm:-mr-5 z-10 select-none pointer-events-none transition-transform duration-500 group-hover:scale-105 group-hover:-translate-x-1 shrink-0">
         {formattedRank}
       </div>
 
-      {/* Poster Card */}
+      {/* Poster Card (Fluid Responsive Width with 2/3 Aspect Ratio) */}
       <Link
         href={`/movies/${movie.id}`}
-        className="relative block w-36 sm:w-44 lg:w-48 aspect-[2/3] rounded-lg overflow-hidden border border-white/10 bg-[#07090E] transition-all duration-300 group-hover:border-cyan-400/60 group-hover:-translate-y-1 group-hover:shadow-[0_0_25px_rgba(0,229,255,0.2)]"
+        className="relative flex-1 aspect-[2/3] min-w-0 rounded-lg overflow-hidden border border-white/10 bg-[#07090E] transition-all duration-300 group-hover:border-cyan-400/60 group-hover:-translate-y-1 group-hover:shadow-[0_0_25px_rgba(0,229,255,0.2)] block"
       >
         <Image
           src={posterUrl}
           alt={movie.title}
           fill
-          sizes="(max-width: 640px) 144px, 192px"
+          sizes="(max-width: 480px) 130px, (max-width: 768px) 160px, (max-width: 1200px) 180px, 200px"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           unoptimized={posterUrl.startsWith("/placeholder")}
         />
@@ -66,11 +66,11 @@ export function TopTenCard({ movie, rank }: TopTenCardProps) {
         </div>
 
         {/* Bottom Ambient Info Gradient */}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent p-2.5 pt-8 opacity-90 group-hover:opacity-100 transition-opacity">
-          <p className="text-xs font-semibold text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent p-2 sm:p-2.5 pt-8 opacity-90 group-hover:opacity-100 transition-opacity">
+          <p className="text-[11px] sm:text-xs font-semibold text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">
             {movie.title}
           </p>
-          <p className="text-[10px] text-slate-400 tabular-nums">
+          <p className="text-[9px] sm:text-[10px] text-slate-400 tabular-nums">
             {formatYear(movie.release_date)}
           </p>
         </div>

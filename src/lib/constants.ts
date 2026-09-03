@@ -1,4 +1,4 @@
-export const SITE_NAME = "Elemes Movies";
+export const SITE_NAME = "Elemes Cinema";
 export const SITE_DESCRIPTION =
   "Movie & TV Show Catalog Web App powered by TMDB API. Discover top rated, popular, and trending entertainment.";
 
