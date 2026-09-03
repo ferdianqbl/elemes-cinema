@@ -56,6 +56,12 @@ export interface PersonCastCredit {
   poster_path: string | null;
   backdrop_path: string | null;
   vote_average: number;
+  vote_count?: number;
+  overview?: string;
+  genre_ids?: number[];
+  popularity?: number;
+  original_language?: string;
+  original_title?: string;
   release_date?: string;
   first_air_date?: string;
   episode_count?: number;
