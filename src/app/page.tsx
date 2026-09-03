@@ -1,40 +1,45 @@
 "use client";
 
-import React from "react";
-import {
-  usePopularMovies,
-  useNowPlayingMovies,
-} from "@/features/movies/hooks/use-movies";
-import { usePopularTv } from "@/features/tv/hooks/use-tv";
-import { usePopularPeople } from "@/features/people/hooks/use-people";
-import { MovieHero } from "@/features/movies/components/movie-hero";
-import { MovieGrid } from "@/features/movies/components/movie-grid";
-import { TvWidescreenCard } from "@/features/tv/components/tv-widescreen-card";
-import { PersonCard } from "@/features/people/components/person-card";
 import { SectionHeader } from "@/components/layout/section-header";
 import { AmbientGlow } from "@/components/ui/ambient-glow";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MovieGrid } from "@/features/movies/components/movie-grid";
+import { MovieHero } from "@/features/movies/components/movie-hero";
+import {
+  useNowPlayingMovies,
+  usePopularMovies,
+} from "@/features/movies/hooks/use-movies";
+import { PersonCard } from "@/features/people/components/person-card";
+import { usePopularPeople } from "@/features/people/hooks/use-people";
+import { TvWidescreenCard } from "@/features/tv/components/tv-widescreen-card";
+import { usePopularTv } from "@/features/tv/hooks/use-tv";
 
 export default function HomePage() {
   const { data: popularMoviesData, isLoading: isPopularMoviesLoading } =
     usePopularMovies({ page: 1 });
   const { data: nowPlayingData, isLoading: isNowPlayingLoading } =
     useNowPlayingMovies({ page: 1 });
-  const { data: popularTvData, isLoading: isPopularTvLoading } =
-    usePopularTv({ page: 1 });
+  const { data: popularTvData, isLoading: isPopularTvLoading } = usePopularTv({
+    page: 1,
+  });
   const { data: popularPeopleData, isLoading: isPopularPeopleLoading } =
     usePopularPeople({ page: 1 });
 
-  const featuredMovie = nowPlayingData?.results?.[0] || popularMoviesData?.results?.[0];
+  const featuredMovie =
+    nowPlayingData?.results?.[0] || popularMoviesData?.results?.[0];
   const popularMovies = (popularMoviesData?.results || []).slice(0, 10);
   const widescreenTvShows = (popularTvData?.results || []).slice(0, 6);
   const popularPeople = (popularPeopleData?.results || []).slice(0, 6);
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-16 overflow-x-hidden">
       {/* 1. Hero Banner Section with Ambient Glow */}
       <section aria-label="Featured Movie" className="relative">
-        <AmbientGlow intensity="medium" color="cyan" className="-top-20 -bottom-20" />
+        <AmbientGlow
+          intensity="medium"
+          color="cyan"
+          className="-top-20 -bottom-20"
+        />
         <MovieHero
           movie={featuredMovie}
           isLoading={isNowPlayingLoading && isPopularMoviesLoading}
