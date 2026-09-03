@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Search, Loader2, ArrowRight } from "lucide-react";
 import { useUiStore } from "@/store/use-ui-store";
 import { useMultiSearch } from "@/features/search/hooks/use-search";
+import { useDebounce } from "@/hooks/use-debounce";
 import { getPosterUrl, getProfileUrl } from "@/lib/tmdb";
 import { formatYear } from "@/lib/utils";
 import { RatingBadge } from "@/components/ui/rating-badge";
@@ -20,6 +21,7 @@ export function SearchModal() {
   const router = useRouter();
   const { isSearchOpen, closeSearch, toggleSearch } = useUiStore();
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 300);
 
   // Listen for Cmd+K / Ctrl+K shortcut
   useEffect(() => {
@@ -33,8 +35,9 @@ export function SearchModal() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [toggleSearch]);
 
-  const { data, isLoading } = useMultiSearch({ query });
+  const { data, isLoading } = useMultiSearch({ query: debouncedQuery });
   const results = (data?.results || []).slice(0, 6);
+  const isSearching = isLoading || query !== debouncedQuery;
 
   const handleSelect = (href: string) => {
     closeSearch();
@@ -64,7 +67,7 @@ export function SearchModal() {
               className="w-full bg-transparent text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none font-normal"
               autoFocus
             />
-            {isLoading && <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />}
+            {isSearching && <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />}
           </form>
         </DialogHeader>
 
@@ -74,7 +77,7 @@ export function SearchModal() {
             <div className="p-6 text-center text-xs text-slate-500">
               Type at least 2 characters to search...
             </div>
-          ) : results.length === 0 && !isLoading ? (
+          ) : results.length === 0 && !isSearching ? (
             <div className="p-6 text-center text-xs text-slate-400">
               No results found for &ldquo;{query}&rdquo;
             </div>

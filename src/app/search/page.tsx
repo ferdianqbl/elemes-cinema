@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, Loader2 } from "lucide-react";
 import { useMultiSearch } from "@/features/search/hooks/use-search";
+import { useDebounce } from "@/hooks/use-debounce";
 import { MovieCard } from "@/features/movies/components/movie-card";
 import { TvCard } from "@/features/tv/components/tv-card";
 import { PersonCard } from "@/features/people/components/person-card";
@@ -18,6 +19,7 @@ export default function SearchPage() {
   const initialQuery = searchParams.get("q") || "";
 
   const [searchInput, setSearchInput] = useState(initialQuery);
+  const debouncedQuery = useDebounce(searchInput, 350);
   const [activeTab, setActiveTab] = useState<"all" | "movie" | "tv" | "person">("all");
 
   useEffect(() => {
@@ -25,8 +27,10 @@ export default function SearchPage() {
   }, [initialQuery]);
 
   const { data, isLoading } = useMultiSearch({
-    query: searchInput,
+    query: debouncedQuery,
   });
+
+  const isSearching = isLoading || (searchInput !== debouncedQuery && searchInput.trim().length >= 2);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,14 +135,14 @@ export default function SearchPage() {
       )}
 
       {/* Loading state */}
-      {isLoading && (
+      {isSearching && (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
         </div>
       )}
 
       {/* Empty State */}
-      {!isLoading && searchInput.trim().length >= 2 && displayedResults.length === 0 && (
+      {!isSearching && searchInput.trim().length >= 2 && displayedResults.length === 0 && (
         <div className="py-20 text-center space-y-2">
           <p className="text-base font-light text-white">
             No results found for &ldquo;{searchInput}&rdquo;
@@ -150,7 +154,7 @@ export default function SearchPage() {
       )}
 
       {/* Results Grid */}
-      {!isLoading && displayedResults.length > 0 && (
+      {!isSearching && displayedResults.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {displayedResults.map((item) => {
             if (item.media_type === "movie") {
