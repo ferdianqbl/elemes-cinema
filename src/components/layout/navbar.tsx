@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Film,
   Search,
@@ -39,22 +39,24 @@ import {
 } from "@/components/ui/drawer";
 
 const MOVIE_CATEGORIES = [
-  { label: "Popular Movies", desc: "Top trending worldwide", href: "/movies", icon: Flame },
-  { label: "Top Rated", desc: "Highest voter ratings", href: "/movies", icon: Sparkles },
-  { label: "Now Playing", desc: "Currently in theaters", href: "/movies", icon: Clock },
-  { label: "Upcoming", desc: "Coming soon to cinemas", href: "/movies", icon: Calendar },
+  { id: "popular", label: "Popular Movies", desc: "Top trending worldwide", href: "/movies?category=popular", icon: Flame },
+  { id: "top_rated", label: "Top Rated", desc: "Highest voter ratings", href: "/movies?category=top_rated", icon: Sparkles },
+  { id: "now_playing", label: "Now Playing", desc: "Currently in theaters", href: "/movies?category=now_playing", icon: Clock },
+  { id: "upcoming", label: "Upcoming", desc: "Coming soon to cinemas", href: "/movies?category=upcoming", icon: Calendar },
 ];
 
 const TV_CATEGORIES = [
-  { label: "Popular TV Shows", desc: "Most streamed series", href: "/tv", icon: Flame },
-  { label: "Top Rated TV", desc: "Critically acclaimed", href: "/tv", icon: Sparkles },
-  { label: "On The Air", desc: "Currently airing seasons", href: "/tv", icon: Radio },
-  { label: "Airing Today", desc: "Fresh episodes broadcasting", href: "/tv", icon: Calendar },
+  { id: "popular", label: "Popular TV Shows", desc: "Most streamed series", href: "/tv?category=popular", icon: Flame },
+  { id: "top_rated", label: "Top Rated TV", desc: "Critically acclaimed", href: "/tv?category=top_rated", icon: Sparkles },
+  { id: "on_the_air", label: "On The Air", desc: "Currently airing seasons", href: "/tv?category=on_the_air", icon: Radio },
+  { id: "airing_today", label: "Airing Today", desc: "Fresh episodes broadcasting", href: "/tv?category=airing_today", icon: Calendar },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get("category");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const watchlistCount = useWatchlistStore((state) => state.items.length);
@@ -145,14 +147,22 @@ export function Navbar() {
                       <div className="grid grid-cols-2 gap-1">
                         {MOVIE_CATEGORIES.map((cat, idx) => {
                           const Icon = cat.icon;
+                          const isCatActive =
+                            isMoviesActive &&
+                            (currentCategory === cat.id || (!currentCategory && cat.id === "popular"));
                           return (
                             <Link
                               key={idx}
                               href={cat.href}
-                              className="flex flex-col gap-0.5 rounded-lg p-2 hover:bg-[#0E121B] text-slate-300 hover:text-cyan-400 transition-colors"
+                              className={cn(
+                                "flex flex-col gap-0.5 rounded-lg p-2 transition-colors",
+                                isCatActive
+                                  ? "bg-cyan-950/70 text-cyan-400 border border-cyan-500/30"
+                                  : "text-slate-300 hover:text-cyan-400 hover:bg-[#0E121B]"
+                              )}
                             >
                               <div className="flex items-center gap-1.5">
-                                <Icon className="h-3 w-3 text-cyan-400" />
+                                <Icon className={cn("h-3 w-3", isCatActive ? "text-cyan-400" : "text-slate-400")} />
                                 <span className="text-xs font-medium">{cat.label}</span>
                               </div>
                               <span className="text-[10px] text-slate-500">{cat.desc}</span>
@@ -198,14 +208,22 @@ export function Navbar() {
                       <div className="grid grid-cols-2 gap-1">
                         {TV_CATEGORIES.map((cat, idx) => {
                           const Icon = cat.icon;
+                          const isCatActive =
+                            isTvActive &&
+                            (currentCategory === cat.id || (!currentCategory && cat.id === "popular"));
                           return (
                             <Link
                               key={idx}
                               href={cat.href}
-                              className="flex flex-col gap-0.5 rounded-lg p-2 hover:bg-[#0E121B] text-slate-300 hover:text-cyan-400 transition-colors"
+                              className={cn(
+                                "flex flex-col gap-0.5 rounded-lg p-2 transition-colors",
+                                isCatActive
+                                  ? "bg-cyan-950/70 text-cyan-400 border border-cyan-500/30"
+                                  : "text-slate-300 hover:text-cyan-400 hover:bg-[#0E121B]"
+                              )}
                             >
                               <div className="flex items-center gap-1.5">
-                                <Icon className="h-3 w-3 text-cyan-400" />
+                                <Icon className={cn("h-3 w-3", isCatActive ? "text-cyan-400" : "text-slate-400")} />
                                 <span className="text-xs font-medium">{cat.label}</span>
                               </div>
                               <span className="text-[10px] text-slate-500">{cat.desc}</span>
@@ -342,39 +360,91 @@ export function Navbar() {
                     <span>Home</span>
                   </Link>
 
-                  <Link
-                    href="/movies"
-                    onClick={() => setIsDrawerOpen(false)}
-                    className={cn(
-                      "flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
-                      isMoviesActive
-                        ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
-                        : "text-slate-300 hover:bg-white/5"
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Film className="h-4 w-4 text-cyan-400" />
-                      <span>Movies Catalog</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 uppercase">Explore</span>
-                  </Link>
+                  <div>
+                    <Link
+                      href="/movies"
+                      onClick={() => setIsDrawerOpen(false)}
+                      className={cn(
+                        "flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
+                        isMoviesActive
+                          ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
+                          : "text-slate-300 hover:bg-white/5"
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Film className="h-4 w-4 text-cyan-400" />
+                        <span>Movies Catalog</span>
+                      </div>
+                      <span className="text-[10px] text-slate-500 uppercase">Explore</span>
+                    </Link>
 
-                  <Link
-                    href="/tv"
-                    onClick={() => setIsDrawerOpen(false)}
-                    className={cn(
-                      "flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
-                      isTvActive
-                        ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
-                        : "text-slate-300 hover:bg-white/5"
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Tv className="h-4 w-4 text-cyan-400" />
-                      <span>TV Series</span>
+                    {/* Quick Category Chips */}
+                    <div className="flex flex-wrap gap-1.5 pl-6 pr-2 pt-1.5 pb-2">
+                      {MOVIE_CATEGORIES.map((cat) => {
+                        const isCatActive =
+                          isMoviesActive &&
+                          (currentCategory === cat.id || (!currentCategory && cat.id === "popular"));
+                        return (
+                          <Link
+                            key={cat.id}
+                            href={cat.href}
+                            onClick={() => setIsDrawerOpen(false)}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors",
+                              isCatActive
+                                ? "bg-cyan-400 text-neutral-950 font-bold"
+                                : "bg-[#0E121B] text-slate-400 hover:text-white border border-white/5"
+                            )}
+                          >
+                            {cat.label}
+                          </Link>
+                        );
+                      })}
                     </div>
-                    <span className="text-[10px] text-slate-500 uppercase">Seasons</span>
-                  </Link>
+                  </div>
+
+                  <div>
+                    <Link
+                      href="/tv"
+                      onClick={() => setIsDrawerOpen(false)}
+                      className={cn(
+                        "flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
+                        isTvActive
+                          ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
+                          : "text-slate-300 hover:bg-white/5"
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Tv className="h-4 w-4 text-cyan-400" />
+                        <span>TV Series</span>
+                      </div>
+                      <span className="text-[10px] text-slate-500 uppercase">Seasons</span>
+                    </Link>
+
+                    {/* Quick Category Chips */}
+                    <div className="flex flex-wrap gap-1.5 pl-6 pr-2 pt-1.5 pb-2">
+                      {TV_CATEGORIES.map((cat) => {
+                        const isCatActive =
+                          isTvActive &&
+                          (currentCategory === cat.id || (!currentCategory && cat.id === "popular"));
+                        return (
+                          <Link
+                            key={cat.id}
+                            href={cat.href}
+                            onClick={() => setIsDrawerOpen(false)}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors",
+                              isCatActive
+                                ? "bg-cyan-400 text-neutral-950 font-bold"
+                                : "bg-[#0E121B] text-slate-400 hover:text-white border border-white/5"
+                            )}
+                          >
+                            {cat.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
 
                   <Link
                     href="/people"

@@ -1,31 +1,48 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { motion, AnimatePresence } from "motion/react";
 import { useMoviesByCategory } from "@/features/movies/hooks/use-movies";
 import { MovieCategory } from "@/features/movies/types/movie.types";
 import { MovieGrid } from "@/features/movies/components/movie-grid";
 import { MOVIE_CATEGORIES } from "@/lib/constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
-export default function MoviesPage() {
-  const [activeCategory, setActiveCategory] = useState<MovieCategory>("popular");
+function MoviesContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const categoryQuery = searchParams.get("category");
+
+  const activeCategory: MovieCategory =
+    categoryQuery && MOVIE_CATEGORIES.some((c) => c.id === categoryQuery)
+      ? (categoryQuery as MovieCategory)
+      : "popular";
+
   const [page, setPage] = useState<number>(1);
+
+  // When query param changes externally, reset page to 1
+  useEffect(() => {
+    setPage(1);
+  }, [categoryQuery]);
 
   const { data, isLoading, isPlaceholderData } = useMoviesByCategory(activeCategory, {
     page,
   });
 
   const handleCategoryChange = (val: MovieCategory) => {
-    setActiveCategory(val);
     setPage(1);
+    router.push(`/movies?category=${val}`, { scroll: false });
   };
 
   const totalPages = Math.min(data?.total_pages || 1, 500);
 
   return (
     <div className="space-y-8">
-      {/* Category Header with Tabs */}
+      {/* Category Header with Animated Tabs */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
@@ -36,8 +53,8 @@ export default function MoviesPage() {
           </p>
         </div>
 
-        {/* Tab Filters (Pill Switcher) */}
-        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10 w-fit">
+        {/* Tab Filters (Animated Pill Switcher) */}
+        <div className="relative flex flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10 w-fit">
           {MOVIE_CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.id;
             return (
@@ -45,25 +62,43 @@ export default function MoviesPage() {
                 key={cat.id}
                 type="button"
                 onClick={() => handleCategoryChange(cat.id as MovieCategory)}
-                className={`px-3 sm:px-3.5 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                className={cn(
+                  "relative px-3 sm:px-3.5 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-colors duration-200 cursor-pointer select-none",
                   isActive
-                    ? "bg-cyan-400 text-neutral-950 font-bold"
+                    ? "text-neutral-950 font-bold"
                     : "text-slate-400 hover:text-white"
-                }`}
+                )}
               >
-                {cat.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="activeMovieTabIndicator"
+                    className="absolute inset-0 rounded-md sm:rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/30"
+                    transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                  />
+                )}
+                <span className="relative z-10">{cat.label}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Movie Grid */}
-      <MovieGrid
-        movies={data?.results}
-        isLoading={isLoading}
-        count={20}
-      />
+      {/* Smooth Animated Movie Grid */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`${activeCategory}-${page}`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
+          <MovieGrid
+            movies={data?.results}
+            isLoading={isLoading}
+            count={20}
+          />
+        </motion.div>
+      </AnimatePresence>
 
       {/* Pagination Controls */}
       {data && data.total_pages > 1 && (
@@ -99,5 +134,32 @@ export default function MoviesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function MoviesPageSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-72" />
+        </div>
+        <Skeleton className="h-9 w-64 rounded-full" />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <Skeleton key={i} className="aspect-[2/3] w-full rounded-lg" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function MoviesPage() {
+  return (
+    <Suspense fallback={<MoviesPageSkeleton />}>
+      <MoviesContent />
+    </Suspense>
   );
 }

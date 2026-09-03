@@ -29,4 +29,11 @@ test.describe("TV Shows Catalog & Season Guide", () => {
     await expect(page).toHaveURL(/\/tv\/\d+/);
     await expect(page.getByRole("link", { name: /Back to TV Shows/i })).toBeVisible();
   });
+
+  test("should activate tab based on URL query parameter", async ({ page }) => {
+    await page.goto("/tv?category=top_rated");
+    const topRatedTab = page.getByRole("button", { name: "Top Rated" });
+    await expect(topRatedTab).toBeVisible();
+    await expect(topRatedTab).toHaveClass(/text-neutral-950/);
+  });
 });

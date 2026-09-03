@@ -38,4 +38,11 @@ test.describe("Movies Catalog & Detail Flow", () => {
     await expect(page.getByRole("link", { name: /Back to Movies/i })).toBeVisible();
     await expect(page.getByRole("heading", { name: /Overview/i })).toBeVisible();
   });
+
+  test("should activate tab based on URL query parameter", async ({ page }) => {
+    await page.goto("/movies?category=upcoming");
+    const upcomingTab = page.getByRole("button", { name: "Upcoming" });
+    await expect(upcomingTab).toBeVisible();
+    await expect(upcomingTab).toHaveClass(/text-neutral-950/);
+  });
 });
