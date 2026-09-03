@@ -35,4 +35,15 @@ test.describe("Home Page & Discovery Flow", () => {
     await expect(page).toHaveURL(/\/movies/);
     await expect(page.getByRole("heading", { name: "Movies Catalog" })).toBeVisible();
   });
+
+  test("should render mobile bottom navigation on mobile viewport", async ({ page, isMobile }) => {
+    if (isMobile) {
+      const bottomNav = page.getByRole("navigation", { name: "Mobile Bottom Navigation" });
+      await expect(bottomNav).toBeVisible();
+      const moviesTab = bottomNav.getByRole("link", { name: "Movies" });
+      await expect(moviesTab).toBeVisible();
+      await moviesTab.click();
+      await expect(page).toHaveURL(/\/movies/);
+    }
+  });
 });

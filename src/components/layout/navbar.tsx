@@ -1,25 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
-  Film,
-  Search,
-  Bookmark,
-  Menu,
-  Sparkles,
-  Flame,
-  Clock,
-  Calendar,
-  Radio,
-  Tv,
-  Users,
-  Home,
-} from "lucide-react";
-import { useWatchlistStore } from "@/store/use-watchlist-store";
-import { useUiStore } from "@/store/use-ui-store";
-import { cn } from "@/lib/utils";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -29,27 +17,87 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
+import { useUiStore } from "@/store/use-ui-store";
+import { useWatchlistStore } from "@/store/use-watchlist-store";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Bookmark,
+  Calendar,
+  Clock,
+  Film,
+  Flame,
+  Home,
+  Menu,
+  Radio,
+  Search,
+  Sparkles,
+  Tv,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useState } from "react";
 
 const MOVIE_CATEGORIES = [
-  { id: "popular", label: "Popular Movies", desc: "Top trending worldwide", href: "/movies?category=popular", icon: Flame },
-  { id: "top_rated", label: "Top Rated", desc: "Highest voter ratings", href: "/movies?category=top_rated", icon: Sparkles },
-  { id: "now_playing", label: "Now Playing", desc: "Currently in theaters", href: "/movies?category=now_playing", icon: Clock },
-  { id: "upcoming", label: "Upcoming", desc: "Coming soon to cinemas", href: "/movies?category=upcoming", icon: Calendar },
+  {
+    id: "popular",
+    label: "Popular Movies",
+    desc: "Top trending worldwide",
+    href: "/movies?category=popular",
+    icon: Flame,
+  },
+  {
+    id: "top_rated",
+    label: "Top Rated",
+    desc: "Highest voter ratings",
+    href: "/movies?category=top_rated",
+    icon: Sparkles,
+  },
+  {
+    id: "now_playing",
+    label: "Now Playing",
+    desc: "Currently in theaters",
+    href: "/movies?category=now_playing",
+    icon: Clock,
+  },
+  {
+    id: "upcoming",
+    label: "Upcoming",
+    desc: "Coming soon to cinemas",
+    href: "/movies?category=upcoming",
+    icon: Calendar,
+  },
 ];
 
 const TV_CATEGORIES = [
-  { id: "popular", label: "Popular TV Shows", desc: "Most streamed series", href: "/tv?category=popular", icon: Flame },
-  { id: "top_rated", label: "Top Rated TV", desc: "Critically acclaimed", href: "/tv?category=top_rated", icon: Sparkles },
-  { id: "on_the_air", label: "On The Air", desc: "Currently airing seasons", href: "/tv?category=on_the_air", icon: Radio },
-  { id: "airing_today", label: "Airing Today", desc: "Fresh episodes broadcasting", href: "/tv?category=airing_today", icon: Calendar },
+  {
+    id: "popular",
+    label: "Popular TV Shows",
+    desc: "Most streamed series",
+    href: "/tv?category=popular",
+    icon: Flame,
+  },
+  {
+    id: "top_rated",
+    label: "Top Rated TV",
+    desc: "Critically acclaimed",
+    href: "/tv?category=top_rated",
+    icon: Sparkles,
+  },
+  {
+    id: "on_the_air",
+    label: "On The Air",
+    desc: "Currently airing seasons",
+    href: "/tv?category=on_the_air",
+    icon: Radio,
+  },
+  {
+    id: "airing_today",
+    label: "Airing Today",
+    desc: "Fresh episodes broadcasting",
+    href: "/tv?category=airing_today",
+    icon: Calendar,
+  },
 ];
 
 export function Navbar() {
@@ -79,7 +127,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/85 backdrop-blur-2xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
         {/* Left: Brand & Navigation */}
         <div className="flex items-center gap-2 md:gap-3 lg:gap-6 min-w-0">
           {/* Brand Logo */}
@@ -106,7 +154,8 @@ export function Navbar() {
                     className={cn(
                       navigationMenuTriggerStyle(),
                       "px-2 lg:px-2.5 text-[11px] lg:text-xs",
-                      isHomeActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
+                      isHomeActive &&
+                        "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30",
                     )}
                   >
                     Home
@@ -118,7 +167,8 @@ export function Navbar() {
                   <NavigationMenuTrigger
                     className={cn(
                       "px-2 lg:px-2.5 text-[11px] lg:text-xs",
-                      isMoviesActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
+                      isMoviesActive &&
+                        "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30",
                     )}
                   >
                     Movies
@@ -149,7 +199,8 @@ export function Navbar() {
                           const Icon = cat.icon;
                           const isCatActive =
                             isMoviesActive &&
-                            (currentCategory === cat.id || (!currentCategory && cat.id === "popular"));
+                            (currentCategory === cat.id ||
+                              (!currentCategory && cat.id === "popular"));
                           return (
                             <Link
                               key={idx}
@@ -158,14 +209,25 @@ export function Navbar() {
                                 "flex flex-col gap-0.5 rounded-lg p-2 transition-colors",
                                 isCatActive
                                   ? "bg-cyan-950/70 text-cyan-400 border border-cyan-500/30"
-                                  : "text-slate-300 hover:text-cyan-400 hover:bg-[#0E121B]"
+                                  : "text-slate-300 hover:text-cyan-400 hover:bg-[#0E121B]",
                               )}
                             >
                               <div className="flex items-center gap-1.5">
-                                <Icon className={cn("h-3 w-3", isCatActive ? "text-cyan-400" : "text-slate-400")} />
-                                <span className="text-xs font-medium">{cat.label}</span>
+                                <Icon
+                                  className={cn(
+                                    "h-3 w-3",
+                                    isCatActive
+                                      ? "text-cyan-400"
+                                      : "text-slate-400",
+                                  )}
+                                />
+                                <span className="text-xs font-medium">
+                                  {cat.label}
+                                </span>
                               </div>
-                              <span className="text-[10px] text-slate-500">{cat.desc}</span>
+                              <span className="text-[10px] text-slate-500">
+                                {cat.desc}
+                              </span>
                             </Link>
                           );
                         })}
@@ -179,7 +241,8 @@ export function Navbar() {
                   <NavigationMenuTrigger
                     className={cn(
                       "px-2 lg:px-2.5 text-[11px] lg:text-xs",
-                      isTvActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
+                      isTvActive &&
+                        "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30",
                     )}
                   >
                     TV Shows
@@ -210,7 +273,8 @@ export function Navbar() {
                           const Icon = cat.icon;
                           const isCatActive =
                             isTvActive &&
-                            (currentCategory === cat.id || (!currentCategory && cat.id === "popular"));
+                            (currentCategory === cat.id ||
+                              (!currentCategory && cat.id === "popular"));
                           return (
                             <Link
                               key={idx}
@@ -219,14 +283,25 @@ export function Navbar() {
                                 "flex flex-col gap-0.5 rounded-lg p-2 transition-colors",
                                 isCatActive
                                   ? "bg-cyan-950/70 text-cyan-400 border border-cyan-500/30"
-                                  : "text-slate-300 hover:text-cyan-400 hover:bg-[#0E121B]"
+                                  : "text-slate-300 hover:text-cyan-400 hover:bg-[#0E121B]",
                               )}
                             >
                               <div className="flex items-center gap-1.5">
-                                <Icon className={cn("h-3 w-3", isCatActive ? "text-cyan-400" : "text-slate-400")} />
-                                <span className="text-xs font-medium">{cat.label}</span>
+                                <Icon
+                                  className={cn(
+                                    "h-3 w-3",
+                                    isCatActive
+                                      ? "text-cyan-400"
+                                      : "text-slate-400",
+                                  )}
+                                />
+                                <span className="text-xs font-medium">
+                                  {cat.label}
+                                </span>
                               </div>
-                              <span className="text-[10px] text-slate-500">{cat.desc}</span>
+                              <span className="text-[10px] text-slate-500">
+                                {cat.desc}
+                              </span>
                             </Link>
                           );
                         })}
@@ -242,7 +317,8 @@ export function Navbar() {
                     className={cn(
                       navigationMenuTriggerStyle(),
                       "px-2 lg:px-2.5 text-[11px] lg:text-xs",
-                      isPeopleActive && "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
+                      isPeopleActive &&
+                        "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30",
                     )}
                   >
                     People
@@ -250,7 +326,7 @@ export function Navbar() {
                 </NavigationMenuItem>
 
                 {/* Watchlist */}
-                <NavigationMenuItem>
+                {/* <NavigationMenuItem>
                   <NavigationMenuLink
                     href="/watchlist"
                     className={cn(
@@ -266,7 +342,7 @@ export function Navbar() {
                       </span>
                     )}
                   </NavigationMenuLink>
-                </NavigationMenuItem>
+                </NavigationMenuItem> */}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
@@ -322,7 +398,10 @@ export function Navbar() {
                       <Film className="h-4 w-4 fill-current" />
                     </div>
                     <span>
-                      Elemes<span className="text-cyan-400 font-semibold">Cinema</span>
+                      Elemes
+                      <span className="text-cyan-400 font-semibold">
+                        Cinema
+                      </span>
                     </span>
                   </DrawerTitle>
                   <DrawerDescription>
@@ -353,7 +432,7 @@ export function Navbar() {
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
                       isHomeActive
                         ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
-                        : "text-slate-300 hover:bg-white/5"
+                        : "text-slate-300 hover:bg-white/5",
                     )}
                   >
                     <Home className="h-4 w-4 text-cyan-400" />
@@ -368,14 +447,16 @@ export function Navbar() {
                         "flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
                         isMoviesActive
                           ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
-                          : "text-slate-300 hover:bg-white/5"
+                          : "text-slate-300 hover:bg-white/5",
                       )}
                     >
                       <div className="flex items-center gap-3">
                         <Film className="h-4 w-4 text-cyan-400" />
                         <span>Movies Catalog</span>
                       </div>
-                      <span className="text-[10px] text-slate-500 uppercase">Explore</span>
+                      <span className="text-[10px] text-slate-500 uppercase">
+                        Explore
+                      </span>
                     </Link>
 
                     {/* Quick Category Chips */}
@@ -383,7 +464,8 @@ export function Navbar() {
                       {MOVIE_CATEGORIES.map((cat) => {
                         const isCatActive =
                           isMoviesActive &&
-                          (currentCategory === cat.id || (!currentCategory && cat.id === "popular"));
+                          (currentCategory === cat.id ||
+                            (!currentCategory && cat.id === "popular"));
                         return (
                           <Link
                             key={cat.id}
@@ -393,7 +475,7 @@ export function Navbar() {
                               "px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors",
                               isCatActive
                                 ? "bg-cyan-400 text-neutral-950 font-bold"
-                                : "bg-[#0E121B] text-slate-400 hover:text-white border border-white/5"
+                                : "bg-[#0E121B] text-slate-400 hover:text-white border border-white/5",
                             )}
                           >
                             {cat.label}
@@ -411,14 +493,16 @@ export function Navbar() {
                         "flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
                         isTvActive
                           ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
-                          : "text-slate-300 hover:bg-white/5"
+                          : "text-slate-300 hover:bg-white/5",
                       )}
                     >
                       <div className="flex items-center gap-3">
                         <Tv className="h-4 w-4 text-cyan-400" />
                         <span>TV Series</span>
                       </div>
-                      <span className="text-[10px] text-slate-500 uppercase">Seasons</span>
+                      <span className="text-[10px] text-slate-500 uppercase">
+                        Seasons
+                      </span>
                     </Link>
 
                     {/* Quick Category Chips */}
@@ -426,7 +510,8 @@ export function Navbar() {
                       {TV_CATEGORIES.map((cat) => {
                         const isCatActive =
                           isTvActive &&
-                          (currentCategory === cat.id || (!currentCategory && cat.id === "popular"));
+                          (currentCategory === cat.id ||
+                            (!currentCategory && cat.id === "popular"));
                         return (
                           <Link
                             key={cat.id}
@@ -436,7 +521,7 @@ export function Navbar() {
                               "px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors",
                               isCatActive
                                 ? "bg-cyan-400 text-neutral-950 font-bold"
-                                : "bg-[#0E121B] text-slate-400 hover:text-white border border-white/5"
+                                : "bg-[#0E121B] text-slate-400 hover:text-white border border-white/5",
                             )}
                           >
                             {cat.label}
@@ -453,14 +538,16 @@ export function Navbar() {
                       "flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
                       isPeopleActive
                         ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
-                        : "text-slate-300 hover:bg-white/5"
+                        : "text-slate-300 hover:bg-white/5",
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <Users className="h-4 w-4 text-cyan-400" />
                       <span>People & Cast</span>
                     </div>
-                    <span className="text-[10px] text-slate-500 uppercase">Celebrities</span>
+                    <span className="text-[10px] text-slate-500 uppercase">
+                      Celebrities
+                    </span>
                   </Link>
 
                   <Link
@@ -470,7 +557,7 @@ export function Navbar() {
                       "flex items-center justify-between rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors",
                       isWatchlistActive
                         ? "bg-cyan-950/60 text-cyan-400 border border-cyan-500/30"
-                        : "text-slate-300 hover:bg-white/5"
+                        : "text-slate-300 hover:bg-white/5",
                     )}
                   >
                     <div className="flex items-center gap-3">

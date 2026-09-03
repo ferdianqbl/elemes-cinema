@@ -31,6 +31,8 @@ export const metadata: Metadata = {
   ],
 };
 
+import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
+
 export default function RootLayout({
   children,
 }: {
@@ -44,10 +46,11 @@ export default function RootLayout({
             <Suspense fallback={<div className="h-16 w-full border-b border-white/10 bg-black/85" />}>
               <Navbar />
             </Suspense>
-            <main className="flex-1 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <main className="flex-1 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8">
               {children}
             </main>
             <Footer />
+            <MobileTabBar />
             <SearchModal />
           </TooltipProvider>
         </QueryProvider>

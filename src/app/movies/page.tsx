@@ -53,8 +53,8 @@ function MoviesContent() {
           </p>
         </div>
 
-        {/* Tab Filters (Animated Pill Switcher) */}
-        <div className="relative flex flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-lg sm:rounded-full bg-[#07090E] border border-white/10 w-fit">
+        {/* Tab Filters (Animated Pill Switcher - Horizontal Scroll on Mobile) */}
+        <div className="relative flex items-center gap-1 sm:gap-1.5 p-1 rounded-full bg-[#07090E] border border-white/10 w-full sm:w-fit overflow-x-auto no-scrollbar scroll-smooth flex-nowrap shrink-0">
           {MOVIE_CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.id;
             return (
@@ -63,7 +63,7 @@ function MoviesContent() {
                 type="button"
                 onClick={() => handleCategoryChange(cat.id as MovieCategory)}
                 className={cn(
-                  "relative px-3 sm:px-3.5 py-1 rounded-md sm:rounded-full text-xs font-semibold transition-colors duration-200 cursor-pointer select-none",
+                  "relative px-3 sm:px-3.5 py-1.5 sm:py-1 rounded-full text-xs font-semibold transition-colors duration-200 cursor-pointer select-none shrink-0 whitespace-nowrap active:scale-95",
                   isActive
                     ? "text-neutral-950 font-bold"
                     : "text-slate-400 hover:text-white"
@@ -72,7 +72,7 @@ function MoviesContent() {
                 {isActive && (
                   <motion.span
                     layoutId="activeMovieTabIndicator"
-                    className="absolute inset-0 rounded-md sm:rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/30"
+                    className="absolute inset-0 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/30"
                     transition={{ type: "spring", stiffness: 450, damping: 35 }}
                   />
                 )}
