@@ -3,7 +3,6 @@
 **Project:** Elemes — Movie & TV Show Catalog Web App  
 **Test Suite Coverage:** Functional, UI/UX, Performance, Accessibility & Persistence  
 **Assessment Target:** Elemes Frontend Developer (Middle Level)  
-**Submission Contact:** `alifa@elemes.id`  
 **Version:** 1.3.0  
 
 ---

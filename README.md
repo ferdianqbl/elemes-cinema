@@ -196,5 +196,4 @@ npm start
 ## 👨‍💻 Submission Information
 * **Applicant:** Ferdian Iqbal
 * **Assessment Target:** Frontend Developer (Middle Level) — Elemes
-* **Submission Contact:** `alifa@elemes.id`
 * **Repository:** [https://github.com/ferdianqbl/elemes-cinema](https://github.com/ferdianqbl/elemes-cinema)

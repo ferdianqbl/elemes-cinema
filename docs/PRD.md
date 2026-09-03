@@ -3,7 +3,6 @@
 **Project:** Elemes — Movie & TV Show Catalog Web App  
 **Client / Assessment:** Frontend Developer Technical Test (Middle Level) — Elemes  
 **API Source:** [The Movie Database (TMDB) API](https://developer.themoviedb.org/docs)  
-**Submission Contact:** `alifa@elemes.id`  
 **Status:** Complete / Shipped  
 **Version:** 1.3.0  
 
